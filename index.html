@@ -1312,9 +1312,7 @@
     initFontFamilyList();
     updateFontTypeList('Inter');
     updateFontPreview();
-    updatePreview();
-
-    function addCustomKey() {
+        setTimeout(updatePreview, 0);    function addCustomKey() {
       const keyEl  = document.getElementById('custom-key');
       const descEl = document.getElementById('custom-key-desc');
       const key  = keyEl.value.trim();
