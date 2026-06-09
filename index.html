@@ -88,7 +88,7 @@
     .card {
       display: flex;
       width: 100%;
-      max-width: 860px;
+      max-width: 1100px;
       border-radius: 24px;
       overflow: hidden;
       box-shadow: 0 4px 32px 0 rgba(0,0,0,0.12);
@@ -520,9 +520,41 @@
     }
 
     /* ── Version blocks (Site Customization) ── */
-    .version-blocks-row {
+    /* ── Site Customization two-column layout ── */
+    .customization-layout {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 490px;
+      gap: 24px;
+      align-items: start;
+    }
+    .version-editor {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .version-editor-tabs {
+      display: flex;
+      gap: 8px;
+    }
+    .version-editor-tab {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      background: white;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      font-family: 'Poppins', sans-serif;
+    }
+    .version-editor-tab.active {
+      border-color: var(--primary-100);
+      background: var(--primary-10, #f5f0fb);
+    }
+    .version-fields {
+      display: flex;
+      flex-direction: column;
       gap: 16px;
     }
     .char-count {
@@ -870,53 +902,55 @@
           <h2>Site Customization</h2>
         </div>
 
-        <div class="version-blocks-row">
-          <!-- Version A -->
-          <div class="version-block">
-            <div class="version-block-header">
-              <span class="version-badge version-badge-a">Version A</span>
-              <span class="version-default-tag">Default</span>
+        <div class="customization-layout">
+
+          <!-- LEFT: version editor -->
+          <div class="version-editor">
+            <div class="version-editor-tabs">
+              <button class="version-editor-tab active" id="vetab-a" onclick="setVersion('a')">
+                <span class="version-badge version-badge-a">Version A</span>
+                <span class="version-default-tag">Default</span>
+              </button>
+              <button class="version-editor-tab" id="vetab-b" onclick="setVersion('b')">
+                <span class="version-badge version-badge-b">Version B</span>
+              </button>
             </div>
-            <div class="field-group">
-              <label for="va-header">Landing Page Header</label>
-              <input type="text" id="va-header" value="Wealth is about experiencing life fully." maxlength="100" placeholder="Enter your main heading…" oninput="updatePreview(); updateCharCount('va-header', 'cc-va-header')">
-              <span class="char-count" id="cc-va-header">59 remaining</span>
+
+            <div class="version-fields" id="vfields-a">
+              <div class="field-group">
+                <label for="va-header">Landing Page Header</label>
+                <input type="text" id="va-header" value="Wealth is about experiencing life fully." maxlength="100" placeholder="Enter your main heading…" oninput="updatePreview(); updateCharCount('va-header', 'cc-va-header')">
+                <span class="char-count" id="cc-va-header">59 remaining</span>
+              </div>
+              <div class="field-group">
+                <label for="va-subtext">Landing Page Header Subtext</label>
+                <textarea id="va-subtext" rows="5" maxlength="100" placeholder="Enter supporting subtext…" oninput="updatePreview(); updateCharCount('va-subtext', 'cc-va-subtext')">Take a few minutes to get clear on what matters most and what your money is really for.</textarea>
+                <span class="char-count" id="cc-va-subtext">13 remaining</span>
+              </div>
             </div>
-            <div class="field-group">
-              <label for="va-subtext">Landing Page Header Subtext</label>
-              <textarea id="va-subtext" rows="3" maxlength="100" placeholder="Enter supporting subtext…" oninput="updatePreview(); updateCharCount('va-subtext', 'cc-va-subtext')">Take a few minutes to get clear on what matters most and what your money is really for.</textarea>
-              <span class="char-count" id="cc-va-subtext">13 remaining</span>
+
+            <div class="version-fields" id="vfields-b" style="display:none">
+              <div class="field-group">
+                <label for="vb-header">Landing Page Header</label>
+                <input type="text" id="vb-header" maxlength="100" placeholder="Enter an alternative heading…" oninput="updatePreview(); updateCharCount('vb-header', 'cc-vb-header')">
+                <span class="char-count" id="cc-vb-header">100 remaining</span>
+              </div>
+              <div class="field-group">
+                <label for="vb-subtext">Landing Page Header Subtext</label>
+                <textarea id="vb-subtext" rows="5" maxlength="100" placeholder="Enter alternative subtext…" oninput="updatePreview(); updateCharCount('vb-subtext', 'cc-vb-subtext')"></textarea>
+                <span class="char-count" id="cc-vb-subtext">100 remaining</span>
+              </div>
             </div>
+
+            <button class="btn-save" onclick="showSaveModal()">Save Changes</button>
           </div>
 
-          <!-- Version B -->
-          <div class="version-block">
-            <div class="version-block-header">
-              <span class="version-badge version-badge-b">Version B</span>
+          <!-- RIGHT: preview -->
+          <div class="preview-wrapper">
+            <div class="preview-toolbar">
+              <span class="preview-label">Landing Page Preview</span>
             </div>
-            <div class="field-group">
-              <label for="vb-header">Landing Page Header</label>
-              <input type="text" id="vb-header" maxlength="100" placeholder="Enter an alternative heading…" oninput="updatePreview(); updateCharCount('vb-header', 'cc-vb-header')">
-              <span class="char-count" id="cc-vb-header">100 remaining</span>
-            </div>
-            <div class="field-group">
-              <label for="vb-subtext">Landing Page Header Subtext</label>
-              <textarea id="vb-subtext" rows="3" maxlength="100" placeholder="Enter alternative subtext…" oninput="updatePreview(); updateCharCount('vb-subtext', 'cc-vb-subtext')"></textarea>
-              <span class="char-count" id="cc-vb-subtext">100 remaining</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Live Landing Page Preview -->
-        <div class="preview-wrapper">
-          <div class="preview-toolbar">
-            <span class="preview-label">Landing Page Preview</span>
-            <div class="preview-version-btns">
-              <button class="preview-version-btn active" id="pvbtn-a" onclick="setPreviewVersion('a')">Version A</button>
-              <button class="preview-version-btn" id="pvbtn-b" onclick="setPreviewVersion('b')">Version B</button>
-            </div>
-          </div>
-          <div class="preview-scale-outer">
+            <div class="preview-scale-outer">
             <div class="lp-preview" id="lp-preview" style="--lp-primary: #240446; --lp-accent: #7639A1;">
               <div class="lp-nav">
                 <div class="lp-nav-knomee">
@@ -967,8 +1001,9 @@
             </div>
           </div>
         </div>
+          </div><!-- /preview-wrapper -->
+        </div><!-- /customization-layout -->
 
-        <button class="btn-save" onclick="showSaveModal()">Save Changes</button>
       </section>
 
       <!-- Marketing Tab -->
@@ -1390,12 +1425,18 @@
     }
 
     var _previewVersion = 'a';
-    function setPreviewVersion(v) {
+    function setVersion(v) {
       _previewVersion = v;
-      document.getElementById('pvbtn-a').classList.toggle('active', v === 'a');
-      document.getElementById('pvbtn-b').classList.toggle('active', v === 'b');
+      // editor tabs
+      document.getElementById('vetab-a').classList.toggle('active', v === 'a');
+      document.getElementById('vetab-b').classList.toggle('active', v === 'b');
+      // show/hide field panels
+      document.getElementById('vfields-a').style.display = v === 'a' ? '' : 'none';
+      document.getElementById('vfields-b').style.display = v === 'b' ? '' : 'none';
       updatePreview();
     }
+    // legacy alias kept in case anything still calls it
+    function setPreviewVersion(v) { setVersion(v); }
     function updatePreview() {
       const headerEl  = document.getElementById('preview-header');
       const subtextEl = document.getElementById('preview-subtext');
