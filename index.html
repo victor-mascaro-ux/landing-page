@@ -526,23 +526,29 @@
     }
     .version-editor-tabs {
       display: flex;
-      gap: 8px;
+      gap: 4px;
+      border-bottom: 1.5px solid var(--border);
     }
     .version-editor-tab {
       display: flex;
       align-items: center;
       gap: 8px;
-      padding: 8px 16px;
-      border: 1.5px solid var(--border);
-      border-radius: 10px;
-      background: white;
+      padding: 10px 18px;
+      border: none;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -1.5px;
+      background: transparent;
       cursor: pointer;
-      transition: border-color 0.15s, background 0.15s;
       font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: #9ca3af;
+      transition: color 0.15s, border-color 0.15s;
     }
+    .version-editor-tab:hover { color: var(--primary-70); }
     .version-editor-tab.active {
-      border-color: var(--primary-100);
-      background: var(--primary-10, #f5f0fb);
+      color: var(--primary-100);
+      border-bottom-color: var(--primary-100);
     }
     .version-fields {
       display: grid;
@@ -679,16 +685,18 @@
     #preview-header:focus::after, #preview-subtext:focus::after {
       display: none;
     }
-    /* char counter in the preview toolbar — never overlaps the page */
+    /* char counter inside the scaled page, below the active field's right edge */
     .preview-char-badge {
+      position: absolute;
       color: #9ca3af;
       font-family: 'Poppins', sans-serif;
-      font-size: 12px;
-      font-weight: 400;
+      font-size: 13px;
+      font-weight: 500;
       pointer-events: none;
       opacity: 0;
       transition: opacity 0.18s;
       white-space: nowrap;
+      z-index: 10;
     }
     .preview-char-badge.visible { opacity: 1; }
     .preview-char-badge.warn { color: #f59e0b; }
@@ -767,23 +775,25 @@
       margin-bottom: 36px;
     }
     .lp-card {
-      background: #fafafa;
-      border: 1px solid #e8e8e8;
+      background: #F7F7FB;
+      border: none;
       border-radius: 12px;
-      padding: 18px 16px 14px;
+      padding: 20px 18px 24px;
+      min-height: 140px;
       text-align: left;
       position: relative;
+      overflow: hidden;
     }
     .lp-card::after {
       content: '';
       position: absolute;
-      bottom: 0; left: 12px; right: 12px;
-      height: 3px;
+      bottom: 0; left: 0; right: 0;
+      height: 4px;
       background: var(--lp-accent);
-      border-radius: 0 0 2px 2px;
+      border-radius: 0 0 12px 12px;
     }
-    .lp-card-icon { font-size: 18px; margin-bottom: 8px; }
-    .lp-card-title { font-size: 12px; font-weight: 600; color: #111; margin-bottom: 8px; line-height: 1.4; }
+    .lp-card-icon { font-size: 28px; margin-bottom: 14px; display: block; }
+    .lp-card-title { font-size: 14px; font-weight: 700; color: #1a1a2e; margin-bottom: 8px; line-height: 1.4; }
     .lp-card-desc { font-size: 11px; color: #555; line-height: 1.5; }
     .lp-cta {
       display: inline-block;
@@ -952,22 +962,21 @@
 
         <div class="customization-stack">
 
-          <!-- Version A/B tab toggle -->
+          <!-- Version A/B tabs -->
           <div class="version-editor-tabs">
             <button class="version-editor-tab active" id="vetab-a" onclick="setVersion('a')">
-              <span class="version-badge version-badge-a">Version A</span>
+              Version A
               <span class="version-default-tag">Default</span>
             </button>
             <button class="version-editor-tab" id="vetab-b" onclick="setVersion('b')">
-              <span class="version-badge version-badge-b">Version B</span>
+              Version B
             </button>
           </div>
 
-          <!-- Preview (full width, clipped) -->
+          <!-- Preview (full width) -->
           <div class="preview-wrapper">
             <div class="preview-toolbar">
               <span class="preview-label">Landing Page Preview</span>
-              <span id="preview-char-badge" class="preview-char-badge"></span>
             </div>
             <div class="preview-scale-outer">
             <div class="lp-preview" id="lp-preview" style="--lp-primary: #240446; --lp-accent: #7639A1;">
@@ -1017,6 +1026,7 @@
                 <button class="lp-cta">Discover Financial Joy</button>
                 <div class="lp-est">🕐 Est time: 8 min</div>
               </div>
+              <div id="preview-char-badge" class="preview-char-badge"></div>
             </div>
           </div>
           </div><!-- /preview-scale-outer -->
@@ -1493,13 +1503,20 @@
 
     function _setBadge(el) {
       const badge = document.getElementById('preview-char-badge');
-      if (!el || !badge) return;
+      const lp = document.getElementById('lp-preview');
+      if (!el || !badge || !lp) return;
       const field = el.id === 'preview-header' ? 'header' : 'subtext';
       const max = FIELD_MAX[field];
       const len = el.textContent.length;
-      badge.textContent = (field === 'header' ? 'Header ' : 'Subtext ') + len + '/' + max;
+      badge.textContent = len + '/' + max;
       badge.classList.toggle('warn', len >= max * 0.85 && len < max);
       badge.classList.toggle('over', len >= max);
+      // position in unscaled page coords: below the field, right-aligned
+      let top = el.offsetTop, left = el.offsetLeft, n = el.offsetParent;
+      while (n && n !== lp) { top += n.offsetTop; left += n.offsetLeft; n = n.offsetParent; }
+      badge.style.top = (top + el.offsetHeight + 8) + 'px';
+      badge.style.left = 'auto';
+      badge.style.right = (800 - (left + el.offsetWidth)) + 'px';
     }
 
     function onPreviewInput(field) {
