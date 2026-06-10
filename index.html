@@ -60,20 +60,18 @@
       line-height: 1;
       margin-bottom: 1px;
     }
-    .navbar-avatar {
+    .navbar-burger {
       width: 36px;
       height: 36px;
-      border-radius: 50%;
-      background: white;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 21.6px;
-      font-weight: 600;
-      color: var(--primary-100);
-      letter-spacing: -0.22px;
+      cursor: pointer;
+      border-radius: 8px;
       flex-shrink: 0;
+      transition: background 0.15s;
     }
+    .navbar-burger:hover { background: rgba(255,255,255,0.12); }
 
     /* ── Shell ── */
     .shell {
@@ -663,20 +661,20 @@
       background: rgba(36,4,70,0.07);
       box-shadow: 0 0 0 2px rgba(36,4,70,0.18);
     }
-    /* floating char-count badge inside the preview */
+    /* char-count badge pinned to the right end of the active field */
     .preview-char-badge {
-      position: absolute;
+      position: fixed;
       background: var(--primary-100, #240446);
       color: white;
       font-family: 'Poppins', sans-serif;
       font-size: 11px;
       font-weight: 500;
-      padding: 4px 10px;
+      padding: 3px 9px;
       border-radius: 20px;
       pointer-events: none;
       opacity: 0;
       transition: opacity 0.18s;
-      z-index: 20;
+      z-index: 500;
       white-space: nowrap;
       box-shadow: 0 2px 8px rgba(0,0,0,0.18);
     }
@@ -816,7 +814,13 @@
       </svg>
       <span class="navbar-logo-advisor">Advisor</span>
     </div>
-    <div class="navbar-avatar">A</div>
+    <div class="navbar-burger">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="3" y="5" width="18" height="2" rx="1" fill="white"/>
+        <rect x="3" y="11" width="18" height="2" rx="1" fill="white"/>
+        <rect x="3" y="17" width="18" height="2" rx="1" fill="white"/>
+      </svg>
+    </div>
   </nav>
 
   <div class="shell">
@@ -1437,40 +1441,37 @@
 
     var _previewVersion = 'a';
 
+    function _setBadge(el) {
+      const badge = document.getElementById('preview-char-badge');
+      if (!el || !badge) return;
+      const len = el.textContent.length;
+      badge.textContent = len + '/100';
+      badge.classList.toggle('warn', len >= 80 && len < 100);
+      badge.classList.toggle('over', len >= 100);
+      // pin to the right end of the field, vertically centered (viewport coords)
+      const r = el.getBoundingClientRect();
+      const bh = badge.offsetHeight || 22;
+      badge.style.top  = (r.top + r.height / 2 - bh / 2) + 'px';
+      badge.style.left = 'auto';
+      badge.style.right = (window.innerWidth - r.right + 8) + 'px';
+    }
+
     function onPreviewInput(field) {
       const el = document.getElementById('preview-' + field);
       if (!el) return;
-      const text = el.textContent;
       // sync to hidden backing input
       const input = document.getElementById((_previewVersion === 'a' ? 'va-' : 'vb-') + field);
-      if (input) input.value = text;
-      // update badge if visible
+      if (input) input.value = el.textContent;
+      // keep badge count and position in sync while typing
       const badge = document.getElementById('preview-char-badge');
-      if (badge && badge.classList.contains('visible')) {
-        const remaining = 100 - text.length;
-        badge.textContent = remaining + ' remaining';
-        badge.classList.toggle('warn', remaining <= 20 && remaining >= 0);
-        badge.classList.toggle('over', remaining < 0);
-      }
+      if (badge && badge.classList.contains('visible')) _setBadge(el);
     }
 
     function onPreviewFocus(field) {
       const el = document.getElementById('preview-' + field);
       const badge = document.getElementById('preview-char-badge');
-      const outer = document.querySelector('.preview-scale-outer');
-      if (!el || !badge || !outer) return;
-      const elRect = el.getBoundingClientRect();
-      const outerRect = outer.getBoundingClientRect();
-      const top = elRect.bottom - outerRect.top + 6;
-      const right = Math.max(8, outerRect.right - elRect.right);
-      badge.style.top = Math.min(top, outerRect.height - 32) + 'px';
-      badge.style.right = right + 'px';
-      badge.style.left = 'auto';
-      const remaining = 100 - el.textContent.length;
-      badge.textContent = remaining + ' remaining';
-      badge.classList.remove('warn', 'over');
-      badge.classList.toggle('warn', remaining <= 20 && remaining >= 0);
-      badge.classList.toggle('over', remaining < 0);
+      if (!el || !badge) return;
+      _setBadge(el);
       badge.classList.add('visible');
     }
 
