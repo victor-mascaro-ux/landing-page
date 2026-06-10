@@ -630,7 +630,7 @@
     }
     .preview-scale-outer {
       overflow: hidden;
-      height: 210px;
+      height: 260px;
       position: relative;
       background: white;
       border-radius: 0 0 8px 8px;
@@ -645,6 +645,39 @@
       background: white;
       pointer-events: none;
       user-select: none;
+    }
+    /* editable fields inside the preview */
+    #preview-header, #preview-subtext {
+      pointer-events: auto;
+      user-select: text;
+      cursor: text;
+      outline: none;
+      border-radius: 4px;
+      transition: background 0.15s;
+    }
+    #preview-header:hover, #preview-subtext:hover {
+      background: rgba(36,4,70,0.05);
+    }
+    #preview-header:focus, #preview-subtext:focus {
+      background: rgba(36,4,70,0.07);
+      box-shadow: 0 0 0 2px rgba(36,4,70,0.18);
+    }
+    /* char count row below preview */
+    .copy-char-row {
+      display: flex;
+      gap: 16px;
+    }
+    .copy-char-item {
+      flex: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 4px;
+    }
+    .copy-char-label {
+      font-size: 12px;
+      color: var(--text-muted, #6b7280);
+      font-weight: 500;
     }
 
     /* ── Landing page mockup elements ── */
@@ -940,8 +973,8 @@
               </div>
               <div class="lp-body">
                 <div class="lp-welcome">Welcome!</div>
-                <div class="lp-header" id="preview-header">Wealth is about experiencing life fully.</div>
-                <div class="lp-subtext" id="preview-subtext">Take a few minutes to get clear on what matters most and what your money is really for.</div>
+                <div class="lp-header" id="preview-header" contenteditable="true" oninput="onPreviewInput('header')" onpaste="event.preventDefault();document.execCommand('insertText',false,event.clipboardData.getData('text/plain'))">Wealth is about experiencing life fully.</div>
+                <div class="lp-subtext" id="preview-subtext" contenteditable="true" oninput="onPreviewInput('subtext')" onpaste="event.preventDefault();document.execCommand('insertText',false,event.clipboardData.getData('text/plain'))">Take a few minutes to get clear on what matters most and what your money is really for.</div>
                 <div class="lp-cards-label">What you'll get:</div>
                 <div class="lp-cards">
                   <div class="lp-card">
@@ -968,33 +1001,23 @@
         </div>
           </div><!-- /preview-wrapper -->
 
-          <!-- Version A fields (2-col) -->
-          <div class="version-fields" id="vfields-a">
-            <div class="field-group">
-              <label for="va-header">Landing Page Header</label>
-              <input type="text" id="va-header" value="Wealth is about experiencing life fully." maxlength="100" placeholder="Enter your main heading…" oninput="updatePreview(); updateCharCount('va-header', 'cc-va-header')">
-              <span class="char-count" id="cc-va-header">59 remaining</span>
+          <!-- Char counts -->
+          <div class="copy-char-row">
+            <div class="copy-char-item">
+              <span class="copy-char-label">Header</span>
+              <span class="char-count" id="cc-header">59 remaining</span>
             </div>
-            <div class="field-group">
-              <label for="va-subtext">Landing Page Header Subtext</label>
-              <textarea id="va-subtext" rows="3" maxlength="100" placeholder="Enter supporting subtext…" oninput="updatePreview(); updateCharCount('va-subtext', 'cc-va-subtext')">Take a few minutes to get clear on what matters most and what your money is really for.</textarea>
-              <span class="char-count" id="cc-va-subtext">13 remaining</span>
+            <div class="copy-char-item">
+              <span class="copy-char-label">Subtext</span>
+              <span class="char-count" id="cc-subtext">13 remaining</span>
             </div>
           </div>
 
-          <!-- Version B fields (2-col, hidden) -->
-          <div class="version-fields" id="vfields-b" style="display:none">
-            <div class="field-group">
-              <label for="vb-header">Landing Page Header</label>
-              <input type="text" id="vb-header" maxlength="100" placeholder="Enter an alternative heading…" oninput="updatePreview(); updateCharCount('vb-header', 'cc-vb-header')">
-              <span class="char-count" id="cc-vb-header">100 remaining</span>
-            </div>
-            <div class="field-group">
-              <label for="vb-subtext">Landing Page Header Subtext</label>
-              <textarea id="vb-subtext" rows="3" maxlength="100" placeholder="Enter alternative subtext…" oninput="updatePreview(); updateCharCount('vb-subtext', 'cc-vb-subtext')"></textarea>
-              <span class="char-count" id="cc-vb-subtext">100 remaining</span>
-            </div>
-          </div>
+          <!-- Hidden backing store per version -->
+          <input type="hidden" id="va-header" value="Wealth is about experiencing life fully.">
+          <input type="hidden" id="va-subtext" value="Take a few minutes to get clear on what matters most and what your money is really for.">
+          <input type="hidden" id="vb-header" value="">
+          <input type="hidden" id="vb-subtext" value="">
 
           <button class="btn-save" onclick="showSaveModal()">Save Changes</button>
         </div><!-- /customization-stack -->
@@ -1398,7 +1421,7 @@
     initFontFamilyList();
     updateFontTypeList('Inter');
     updateFontPreview();
-        setTimeout(updatePreview, 0);    function addCustomKey() {
+        setTimeout(() => { updatePreview(); onPreviewInput('header'); onPreviewInput('subtext'); }, 0);    function addCustomKey() {
       const keyEl  = document.getElementById('custom-key');
       const descEl = document.getElementById('custom-key-desc');
       const key  = keyEl.value.trim();
@@ -1420,34 +1443,59 @@
     }
 
     var _previewVersion = 'a';
-    function setVersion(v) {
-      _previewVersion = v;
-      // editor tabs
-      document.getElementById('vetab-a').classList.toggle('active', v === 'a');
-      document.getElementById('vetab-b').classList.toggle('active', v === 'b');
-      // show/hide field panels
-      document.getElementById('vfields-a').style.display = v === 'a' ? '' : 'none';
-      document.getElementById('vfields-b').style.display = v === 'b' ? '' : 'none';
-      updatePreview();
+
+    function onPreviewInput(field) {
+      const el = document.getElementById('preview-' + field);
+      if (!el) return;
+      const text = el.textContent;
+      // sync to hidden backing input for current version
+      const inputId = (_previewVersion === 'a' ? 'va-' : 'vb-') + field;
+      const input = document.getElementById(inputId);
+      if (input) input.value = text;
+      // update char count
+      const max = 100;
+      const remaining = max - text.length;
+      const countEl = document.getElementById('cc-' + field);
+      if (countEl) {
+        countEl.textContent = remaining + ' remaining';
+        countEl.classList.toggle('warn', remaining <= 20 && remaining >= 0);
+        countEl.classList.toggle('over', remaining < 0);
+      }
     }
-    // legacy alias kept in case anything still calls it
-    function setPreviewVersion(v) { setVersion(v); }
-    function updatePreview() {
+
+    function setVersion(v) {
+      // save current editable content to hidden inputs
+      const cur = _previewVersion;
       const headerEl  = document.getElementById('preview-header');
       const subtextEl = document.getElementById('preview-subtext');
-      const lp        = document.getElementById('lp-preview');
-      if (!headerEl || !lp) return;
-      const header  = document.getElementById(_previewVersion === 'a' ? 'va-header'  : 'vb-header').value.trim();
-      const subtext = document.getElementById(_previewVersion === 'a' ? 'va-subtext' : 'vb-subtext').value.trim();
-      headerEl.textContent  = header  || '';
-      subtextEl.textContent = subtext || '';
+      if (headerEl)  document.getElementById(cur === 'a' ? 'va-header'  : 'vb-header').value  = headerEl.textContent;
+      if (subtextEl) document.getElementById(cur === 'a' ? 'va-subtext' : 'vb-subtext').value = subtextEl.textContent;
+
+      _previewVersion = v;
+      document.getElementById('vetab-a').classList.toggle('active', v === 'a');
+      document.getElementById('vetab-b').classList.toggle('active', v === 'b');
+
+      // load new version's text into the editable preview elements
+      if (headerEl)  headerEl.textContent  = document.getElementById(v === 'a' ? 'va-header'  : 'vb-header').value;
+      if (subtextEl) subtextEl.textContent = document.getElementById(v === 'a' ? 'va-subtext' : 'vb-subtext').value;
+
+      // refresh char counts
+      onPreviewInput('header');
+      onPreviewInput('subtext');
+    }
+    function setPreviewVersion(v) { setVersion(v); }
+
+    function updatePreview() {
+      // only updates colours and org name — text is edited directly in the preview
+      const lp = document.getElementById('lp-preview');
+      if (!lp) return;
       const primary = '#' + (document.getElementById('hex-primary').value || '240446');
       const accent  = '#' + (document.getElementById('hex-accent').value  || '7639A1');
       lp.style.setProperty('--lp-primary', primary);
       lp.style.setProperty('--lp-accent',  accent);
-      const orgName = document.getElementById('org-name').value.trim() || 'Acme Advisors';
       const orgNameEl = document.getElementById('preview-org-name');
-      orgNameEl.textContent = orgName;
+      if (!orgNameEl) return;
+      orgNameEl.textContent = document.getElementById('org-name').value.trim() || 'Acme Advisors';
       const fontFamily = document.getElementById('font-family').value.trim() || 'Poppins';
       const fontType   = document.getElementById('font-type').value.trim() || 'Regular';
       orgNameEl.style.fontFamily  = `'${fontFamily}', 'Poppins', sans-serif`;
