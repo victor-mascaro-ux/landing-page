@@ -662,26 +662,22 @@
       background: rgba(36,4,70,0.07);
       box-shadow: 0 0 0 2px rgba(36,4,70,0.18);
     }
-    /* char-count badge pinned to the right end of the active field */
+    /* char counter shown below the active field, plain text */
     .preview-char-badge {
       position: fixed;
-      background: var(--primary-100, #240446);
-      color: white;
+      color: #9ca3af;
       font-family: 'Poppins', sans-serif;
-      font-size: 11px;
-      font-weight: 500;
-      padding: 3px 9px;
-      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 400;
       pointer-events: none;
       opacity: 0;
       transition: opacity 0.18s;
       z-index: 500;
       white-space: nowrap;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.18);
     }
     .preview-char-badge.visible { opacity: 1; }
-    .preview-char-badge.warn { background: #f59e0b; }
-    .preview-char-badge.over { background: #ef4444; }
+    .preview-char-badge.warn { color: #f59e0b; }
+    .preview-char-badge.over { color: #ef4444; }
 
     /* ── Landing page mockup elements ── */
     .lp-preview {
@@ -1459,16 +1455,15 @@
     function _setBadge(el) {
       const badge = document.getElementById('preview-char-badge');
       if (!el || !badge) return;
-      const len = el.textContent.length;
-      badge.textContent = len + '/100';
-      badge.classList.toggle('warn', len >= 80 && len < 100);
-      badge.classList.toggle('over', len >= 100);
-      // pin to the right end of the field, vertically centered (viewport coords)
+      const remaining = Math.max(0, 100 - el.textContent.length);
+      badge.textContent = remaining + ' characters left';
+      badge.classList.toggle('warn', remaining <= 20 && remaining > 0);
+      badge.classList.toggle('over', remaining === 0);
+      // just below the field, right-aligned with its right edge (viewport coords)
       const r = el.getBoundingClientRect();
-      const bh = badge.offsetHeight || 22;
-      badge.style.top  = (r.top + r.height / 2 - bh / 2) + 'px';
+      badge.style.top  = (r.bottom + 4) + 'px';
       badge.style.left = 'auto';
-      badge.style.right = (window.innerWidth - r.right + 8) + 'px';
+      badge.style.right = (window.innerWidth - r.right) + 'px';
     }
 
     function onPreviewInput(field) {
