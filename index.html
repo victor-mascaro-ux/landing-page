@@ -636,6 +636,7 @@
     }
     .lp-preview {
       width: 800px;
+      /* scale is set dynamically by fitPreview() so the whole page fits */
       transform: scale(0.93);
       transform-origin: top left;
       position: absolute;
@@ -1013,8 +1014,8 @@
           <!-- Hidden backing store per version -->
           <input type="hidden" id="va-header" value="Wealth is about experiencing life fully.">
           <input type="hidden" id="va-subtext" value="Take a few minutes to get clear on what matters most and what your money is really for.">
-          <input type="hidden" id="vb-header" value="">
-          <input type="hidden" id="vb-subtext" value="">
+          <input type="hidden" id="vb-header" value="Wealth is about experiencing life fully.">
+          <input type="hidden" id="vb-subtext" value="Take a few minutes to get clear on what matters most and what your money is really for.">
 
           <button class="btn-save" onclick="showSaveModal()">Save Changes</button>
         </div><!-- /customization-stack -->
@@ -1418,7 +1419,7 @@
     initFontFamilyList();
     updateFontTypeList('Inter');
     updateFontPreview();
-        setTimeout(() => { updatePreview(); onPreviewInput('header'); onPreviewInput('subtext'); }, 0);    function addCustomKey() {
+        setTimeout(() => { updatePreview(); onPreviewInput('header'); onPreviewInput('subtext'); fitPreview(); }, 0);    function addCustomKey() {
       const keyEl  = document.getElementById('custom-key');
       const descEl = document.getElementById('custom-key-desc');
       const key  = keyEl.value.trim();
@@ -1441,6 +1442,20 @@
 
     var _previewVersion = 'a';
 
+    function fitPreview() {
+      const lp = document.getElementById('lp-preview');
+      const outer = document.querySelector('.preview-scale-outer');
+      if (!lp || !outer || !outer.clientHeight) return;
+      const natW = 800;
+      const natH = lp.offsetHeight;
+      if (!natH) return;
+      const s = Math.min(outer.clientWidth / natW, outer.clientHeight / natH);
+      lp.style.transform = 'scale(' + s + ')';
+      // center horizontally when narrower than the container
+      lp.style.left = Math.max(0, (outer.clientWidth - natW * s) / 2) + 'px';
+    }
+    window.addEventListener('resize', fitPreview);
+
     function _setBadge(el) {
       const badge = document.getElementById('preview-char-badge');
       if (!el || !badge) return;
@@ -1462,6 +1477,7 @@
       // sync to hidden backing input
       const input = document.getElementById((_previewVersion === 'a' ? 'va-' : 'vb-') + field);
       if (input) input.value = el.textContent;
+      fitPreview(); // text wrapping can change the page height
       // keep badge count and position in sync while typing
       const badge = document.getElementById('preview-char-badge');
       if (badge && badge.classList.contains('visible')) _setBadge(el);
@@ -1534,6 +1550,7 @@
       document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
       document.getElementById('tab-' + tab).classList.add('active');
       document.querySelector('[data-tab="' + tab + '"]').classList.add('active');
+      if (tab === 'customization') fitPreview();
     }
 
     function updateColor(key, hex) {
