@@ -651,16 +651,33 @@
       pointer-events: auto;
       user-select: text;
       cursor: text;
-      outline: none;
+      outline: 1.5px dashed rgba(118,57,161,0.45);
+      outline-offset: 4px;
       border-radius: 4px;
-      transition: background 0.15s;
+      transition: background 0.15s, outline-color 0.15s;
+    }
+    /* pencil icon signalling editability; hidden while editing */
+    #preview-header::after, #preview-subtext::after {
+      content: '';
+      display: inline-block;
+      width: 13px;
+      height: 13px;
+      margin-left: 8px;
+      vertical-align: baseline;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M11.3 1.7a1.7 1.7 0 0 1 2.4 2.4l-8.5 8.5-3.2.8.8-3.2 8.5-8.5z' stroke='%237639A1' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center / contain;
+      opacity: 0.65;
     }
     #preview-header:hover, #preview-subtext:hover {
       background: rgba(36,4,70,0.05);
+      outline-color: rgba(118,57,161,0.8);
     }
     #preview-header:focus, #preview-subtext:focus {
-      background: rgba(36,4,70,0.07);
-      box-shadow: 0 0 0 2px rgba(36,4,70,0.18);
+      background: rgba(36,4,70,0.04);
+      outline: 2px solid rgba(118,57,161,0.65);
+      outline-offset: 4px;
+    }
+    #preview-header:focus::after, #preview-subtext:focus::after {
+      display: none;
     }
     /* char counter shown below the active field, plain text */
     .preview-char-badge {
@@ -1455,10 +1472,10 @@
     function _setBadge(el) {
       const badge = document.getElementById('preview-char-badge');
       if (!el || !badge) return;
-      const remaining = Math.max(0, 100 - el.textContent.length);
-      badge.textContent = remaining + ' characters left';
-      badge.classList.toggle('warn', remaining <= 20 && remaining > 0);
-      badge.classList.toggle('over', remaining === 0);
+      const len = el.textContent.length;
+      badge.textContent = len + '/100';
+      badge.classList.toggle('warn', len >= 80 && len < 100);
+      badge.classList.toggle('over', len >= 100);
       // just below the field, right-aligned with its right edge (viewport coords)
       const r = el.getBoundingClientRect();
       badge.style.top  = (r.bottom + 4) + 'px';
