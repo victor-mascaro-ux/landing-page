@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Knomee — Welcome</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Sedan:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --plum:        #240446;
+      --grape:       #7639a1;
+      --grape-light: #e9d9f4;
+      --teal:        #3dbdaa;
+      --teal-light:  #e6f7f5;
+      --tangerine:   #ff9525;
+      --slate:       #757575;
+      --body:        #364153;
+      --muted:       #6a7282;
+      --card-border: #e8e8e8;
+      --card-bg:     rgba(36,4,70,0.05);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { font-family: 'Poppins', sans-serif; background: white; color: var(--body); min-height: 100vh; }
+
+    /* ── Navbar ── */
+    .navbar {
+      height: 50px; background: var(--plum);
+      display: flex; align-items: center; padding: 0 24px;
+      position: relative; z-index: 10;
+    }
+    .navbar-logo { display: flex; align-items: center; gap: 7px; }
+    .navbar-logo svg { width: 20px; height: 20px; }
+    .navbar-logo-text { color: white; font-size: 13px; font-weight: 700; }
+    .navbar-firm {
+      position: absolute; left: 50%; transform: translateX(-50%);
+      font-family: 'Sedan', serif; font-size: 16px; color: white;
+      letter-spacing: 1.5px; text-transform: uppercase;
+    }
+    .navbar-avatar {
+      margin-left: auto; width: 30px; height: 30px; border-radius: 50%;
+      background: rgba(255,255,255,0.18); border: 1.5px solid rgba(255,255,255,0.3);
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-size: 11px; font-weight: 700;
+    }
+
+    /* ── Screens ── */
+    .screen {
+      display: none; min-height: calc(100vh - 50px);
+      flex-direction: column; align-items: center;
+      padding: 64px 40px 100px;
+    }
+    .screen.active { display: flex; }
+
+    /* ── Fade-up ── */
+    .fade-up {
+      opacity: 0; transform: translateY(22px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+    .fade-up.in { opacity: 1; transform: translateY(0); }
+
+    /* ─────────────────────────────── */
+    /*  SCREEN 1 — Welcome             */
+    /* ─────────────────────────────── */
+    .s1-headline {
+      font-size: 48px; font-weight: 500; color: var(--plum);
+      line-height: 1.4; letter-spacing: -1.2px; text-align: center; margin-bottom: 24px;
+    }
+    .s1-sub {
+      font-size: 22px; color: var(--slate); line-height: 1.5;
+      text-align: center; max-width: 700px; margin-bottom: 72px;
+    }
+    .get-label {
+      font-size: 22px; color: var(--body); text-align: left;
+      width: 100%; max-width: 960px; margin-bottom: 8px;
+    }
+    .card-tray {
+      width: 100%; max-width: 960px;
+      background: var(--card-bg); border-radius: 12px;
+      padding: 24px; display: flex; gap: 24px; margin-bottom: 56px;
+    }
+    .feature-card {
+      flex: 1; background: white; border: 1px solid var(--card-border);
+      border-radius: 16px; overflow: hidden; display: flex; flex-direction: column;
+    }
+    .feature-card-inner { flex: 1; padding: 24px; }
+    .feature-card-top { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+    .feature-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+    .feature-title { font-size: 16px; font-weight: 500; color: var(--body); line-height: 1.3; }
+    .feature-body { font-size: 14px; color: var(--body); line-height: 1.5; }
+    .feature-accent { height: 8px; background: var(--grape); flex-shrink: 0; }
+
+    .fj-block { width: 100%; max-width: 760px; margin-bottom: 56px; text-align: center; }
+    .fj-eyebrow {
+      font-size: 13px; font-weight: 600; color: var(--teal);
+      text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 14px;
+      display: flex; align-items: center; gap: 7px; justify-content: center;
+    }
+    .fj-q  { font-size: 22px; font-weight: 700; color: var(--plum); margin-bottom: 6px; }
+    .fj-qs { font-size: 14px; color: var(--muted); margin-bottom: 22px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+    .chip {
+      border: 1.5px solid var(--teal); border-radius: 999px;
+      padding: 11px 22px; font-size: 14px; font-weight: 500; color: var(--teal);
+      cursor: pointer; background: white; user-select: none;
+      transition: background 0.15s, color 0.15s, transform 0.15s, box-shadow 0.15s;
+    }
+    .chip:hover { background: #f0faf8; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(61,189,170,0.2); }
+    .chip.selected { background: var(--teal); color: white; transform: scale(1.03); box-shadow: 0 4px 16px rgba(61,189,170,0.35); }
+    .chip-hint { font-size: 12px; color: var(--muted); margin-top: 10px; }
+
+    .cta-wrap { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+    .cta-btn {
+      background: var(--plum); color: white; border: none;
+      border-radius: 999px; padding: 22px 48px;
+      font-size: 22px; font-weight: 600; font-family: inherit;
+      cursor: pointer; transition: background 0.2s, transform 0.1s, opacity 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(36,4,70,0.22);
+    }
+    .cta-btn:hover:not(:disabled) { background: var(--grape); transform: translateY(-1px); box-shadow: 0 6px 28px rgba(118,57,161,0.3); }
+    .cta-btn:disabled { opacity: 0.32; cursor: not-allowed; box-shadow: none; }
+    @keyframes ctaPulse {
+      0%,100% { box-shadow: 0 4px 20px rgba(36,4,70,0.22); }
+      50%      { box-shadow: 0 4px 32px rgba(36,4,70,0.42), 0 0 0 8px rgba(36,4,70,0.07); }
+    }
+    .cta-btn.pulse { animation: ctaPulse 2.2s ease-in-out infinite; }
+    .cta-time { display: flex; align-items: center; gap: 7px; font-size: 16px; color: var(--muted); }
+
+    /* ─────────────────────────────── */
+    /*  Typeform adventure screens     */
+    /* ─────────────────────────────── */
+
+    /* Shared adventure navbar */
+    .adv-nav {
+      background: var(--plum); height: 50px; width: 100%;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; flex-shrink: 0;
+    }
+    .adv-nav-logo { position: absolute; left: 20px; display: flex; align-items: center; gap: 7px; }
+    .adv-nav-logo-text { color: white; font-size: 13px; font-weight: 700; }
+    .adv-nav-title { color: white; font-size: 15px; font-weight: 600; letter-spacing: 0.2px; }
+    .adv-nav-x {
+      position: absolute; right: 16px;
+      background: none; border: none; color: white; cursor: pointer;
+      display: flex; align-items: center; opacity: 0.75; padding: 6px;
+      transition: opacity 0.15s;
+    }
+    .adv-nav-x:hover { opacity: 1; }
+
+    /* Question number */
+    .adv-qnum {
+      font-size: 13px; font-weight: 700; color: var(--teal);
+      text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 18px;
+    }
+    /* Question headline */
+    .adv-headline {
+      font-size: 36px; font-weight: 700; color: var(--plum);
+      line-height: 1.25; margin-bottom: 36px; max-width: 680px;
+    }
+
+    /* Up/down arrow nav pill (bottom-right) */
+    .adv-arrows {
+      position: fixed; bottom: 28px; right: 28px; z-index: 200;
+      display: none; flex-direction: column;
+      background: var(--plum); border-radius: 999px;
+      overflow: hidden; box-shadow: 0 4px 20px rgba(36,4,70,0.35);
+    }
+    .adv-arrows.visible { display: flex; }
+    .adv-arrow {
+      width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: white; background: none; border: none;
+      transition: background 0.15s;
+    }
+    .adv-arrow:hover { background: rgba(255,255,255,0.12); }
+    .adv-arrow + .adv-arrow { border-top: 1px solid rgba(255,255,255,0.15); }
+    .adv-arrow:disabled { opacity: 0.25; cursor: default; }
+
+    /* Adventure screen body */
+    .adv-screen { padding: 0 !important; }
+    .adv-body {
+      flex: 1; display: flex; flex-direction: column; justify-content: center;
+      padding: 48px max(48px, calc(50% - 400px));
+      min-height: calc(100vh - 50px);
+    }
+    .adv-chip { border-color: var(--plum) !important; color: var(--plum) !important; }
+    .adv-chip:hover { background: rgba(36,4,70,0.05) !important; color: var(--plum) !important; }
+    .adv-chip.selected { background: var(--plum) !important; color: white !important; box-shadow: 0 4px 16px rgba(36,4,70,0.25) !important; }
+
+    .q-headline { font-size: 34px; font-weight: 700; color: var(--plum); text-align: left; line-height: 1.3; margin-bottom: 36px; max-width: 720px; }
+
+    /* Radio matrix */
+    .matrix-wrap { width: 100%; max-width: 760px; }
+    .matrix-header {
+      display: grid; grid-template-columns: 1fr 100px 100px 100px;
+      padding: 0 20px 10px; gap: 0;
+    }
+    .matrix-header-cell {
+      text-align: center; font-size: 14px; font-weight: 600; color: var(--teal);
+    }
+    .matrix-row {
+      display: grid; grid-template-columns: 1fr 100px 100px 100px;
+      align-items: center; background: #deecea; border-radius: 999px;
+      padding: 14px 20px; margin-bottom: 10px; gap: 0;
+      transition: background 0.15s;
+    }
+    .matrix-row:hover { background: #cee4e1; }
+    .matrix-row-label { font-size: 15px; font-weight: 500; color: #1a5c54; }
+    .matrix-radio-cell { display: flex; justify-content: center; align-items: center; }
+    .matrix-radio {
+      width: 22px; height: 22px; border-radius: 50%;
+      border: 2px solid #3a6e68; cursor: pointer;
+      background: white; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .matrix-radio.checked { background: var(--plum); border-color: var(--plum); }
+    .matrix-radio.checked::after {
+      content: ''; width: 8px; height: 8px; border-radius: 50%; background: white;
+    }
+    .matrix-clear { font-size: 14px; color: var(--teal); text-decoration: underline; cursor: pointer; margin-top: 6px; }
+
+    .next-btn {
+      margin-top: 36px; background: var(--plum); color: white; border: none;
+      border-radius: 999px; padding: 18px 44px;
+      font-size: 18px; font-weight: 600; font-family: inherit;
+      cursor: pointer; transition: background 0.2s, transform 0.1s, opacity 0.2s;
+      box-shadow: 0 4px 20px rgba(36,4,70,0.22);
+    }
+    .next-btn:disabled { opacity: 0.32; cursor: not-allowed; box-shadow: none; }
+    .next-btn:hover:not(:disabled) { background: var(--grape); transform: translateY(-1px); }
+
+    /* ─────────────────────────────── */
+    /*  SCREEN 3 — Loading             */
+    /* ─────────────────────────────── */
+    #screen3 {
+      background: var(--plum); justify-content: center;
+    }
+    .load-inner { display: flex; flex-direction: column; align-items: center; }
+    .load-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 48px; }
+    .load-logo-text { color: white; font-size: 22px; font-weight: 700; }
+    .load-ring {
+      width: 80px; height: 80px; border-radius: 50%;
+      border: 3px solid rgba(255,255,255,0.12); border-top-color: var(--teal);
+      animation: spin 1s linear infinite; margin-bottom: 36px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .load-msg { color: rgba(255,255,255,0.85); font-size: 16px; margin-bottom: 28px; min-height: 24px; text-align: center; }
+    .load-bar-track { width: 280px; height: 4px; background: rgba(255,255,255,0.12); border-radius: 2px; overflow: hidden; }
+    .load-bar-fill { height: 100%; background: var(--teal); width: 0%; transition: width 0.12s linear; border-radius: 2px; }
+
+    /* ─────────────────────────────── */
+    /*  SCREEN 4 — Reveal              */
+    /* ─────────────────────────────── */
+    .reveal-eyebrow {
+      font-size: 13px; font-weight: 700; color: var(--teal);
+      text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px;
+    }
+    .reveal-headline { font-size: 40px; font-weight: 700; color: var(--plum); text-align: center; margin-bottom: 8px; line-height: 1.25; }
+    .reveal-sub { font-size: 17px; color: var(--muted); text-align: center; margin-bottom: 56px; }
+
+    .reveal-cards { display: flex; gap: 24px; width: 100%; max-width: 980px; align-items: flex-start; }
+
+    /* ── Shared FID card shell ── */
+    .fid-shell {
+      background: #f5f5f5; border-radius: 12px;
+      border: 1px solid #e0e0e0; overflow: hidden;
+    }
+
+    /* Key Highlight card */
+    .kh-card {
+      flex: 0 0 300px;
+    }
+    .kh-section-header {
+      display: flex; align-items: center; gap: 10px;
+      padding: 18px 20px 14px; border-bottom: 1px solid #e0e0e0;
+    }
+    .kh-section-icon { font-size: 20px; flex-shrink: 0; }
+    .kh-section-title { font-size: 16px; font-weight: 700; color: var(--body); }
+    .kh-section-meta { font-size: 11px; color: var(--muted); margin-top: 1px; }
+
+    /* Insight highlight block inside KH */
+    .kh-highlight {
+      margin: 16px; padding: 16px;
+      background: white; border-radius: 8px; border: 1px solid #e0e0e0;
+    }
+    .kh-hl-label { font-size: 13px; color: var(--grape); font-weight: 600; margin-bottom: 10px; }
+    .kh-hl-headline { font-size: 20px; font-weight: 700; color: var(--plum); line-height: 1.25; margin-bottom: 12px; }
+    .kh-hl-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+    .kh-hl-chip {
+      background: white; border: 1px solid #c8c8c8; border-radius: 999px;
+      padding: 5px 13px; font-size: 13px; color: var(--body);
+    }
+    .kh-hl-divider { height: 1px; background: #e8e8e8; margin: 12px 0; }
+    .kh-hl-insight-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 6px; }
+    .kh-hl-insight { font-size: 13px; color: var(--body); line-height: 1.6; font-style: italic; }
+
+    /* Financial ID section card */
+    .fid-card { flex: 1; }
+    .fid-card-header {
+      display: flex; align-items: center; gap: 10px;
+      padding: 18px 20px 14px; border-bottom: 1px solid #e0e0e0;
+    }
+    .fid-card-icon { font-size: 20px; flex-shrink: 0; }
+    .fid-card-title { font-size: 16px; font-weight: 700; color: var(--body); }
+
+    .fid-section { padding: 16px 20px; }
+    .fid-section + .fid-section { border-top: 1px solid #e0e0e0; }
+    .fid-section-label { font-size: 13px; color: var(--grape); font-weight: 600; margin-bottom: 10px; }
+    .fid-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .fid-chip {
+      background: white; border: 1px solid #c8c8c8; border-radius: 999px;
+      padding: 6px 14px; font-size: 14px; color: var(--body);
+    }
+
+    /* 3 questions inside FID card */
+    .fid-questions { display: flex; flex-direction: column; gap: 10px; }
+    .fid-question {
+      background: white; border-radius: 8px; border: 1px solid #e0e0e0;
+      padding: 12px 14px; font-size: 14px; color: var(--body); line-height: 1.5;
+    }
+
+    .reveal-cta { margin-top: 48px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+    .save-btn {
+      background: var(--teal); color: white; border: none;
+      border-radius: 999px; padding: 20px 48px;
+      font-size: 20px; font-weight: 700; font-family: inherit;
+      cursor: pointer; box-shadow: 0 4px 24px rgba(61,189,170,0.3);
+      transition: background 0.2s, transform 0.1s;
+    }
+    .save-btn:hover { background: #2fa896; transform: translateY(-1px); }
+    .reveal-skip { font-size: 14px; color: var(--muted); cursor: pointer; text-decoration: underline; }
+
+    /* ─────────────────────────────── */
+    /*  SCREEN 5 — Login               */
+    /* ─────────────────────────────── */
+    .login-card {
+      background: white; border: 1px solid var(--card-border);
+      border-radius: 20px; padding: 48px 52px;
+      width: 100%; max-width: 460px;
+      box-shadow: 0 8px 48px rgba(36,4,70,0.10);
+    }
+    .login-logo { display: flex; align-items: center; gap: 8px; margin-bottom: 32px; }
+    .login-logo-text { font-size: 15px; font-weight: 700; color: var(--plum); }
+    .login-headline { font-size: 26px; font-weight: 700; color: var(--plum); margin-bottom: 10px; line-height: 1.25; }
+    .login-sub { font-size: 15px; color: var(--muted); line-height: 1.55; margin-bottom: 28px; }
+    .login-field-wrap { margin-bottom: 16px; }
+    .login-label { display: block; font-size: 13px; font-weight: 600; color: var(--body); margin-bottom: 6px; }
+    .login-input {
+      width: 100%; padding: 13px 16px; border: 1.5px solid var(--card-border);
+      border-radius: 10px; font-size: 15px; font-family: inherit; color: var(--body);
+      outline: none; transition: border-color 0.15s;
+    }
+    .login-input:focus { border-color: var(--grape); }
+    .login-btn {
+      width: 100%; background: var(--plum); color: white; border: none;
+      border-radius: 999px; padding: 15px; font-size: 16px; font-weight: 600;
+      font-family: inherit; cursor: pointer; margin-bottom: 18px;
+      transition: background 0.2s;
+    }
+    .login-btn:hover { background: var(--grape); }
+    .login-or { text-align: center; font-size: 13px; color: var(--muted); margin-bottom: 14px; position: relative; }
+    .login-or::before, .login-or::after {
+      content: ''; position: absolute; top: 50%; width: 42%; height: 1px; background: var(--card-border);
+    }
+    .login-or::before { left: 0; } .login-or::after { right: 0; }
+    .login-google {
+      width: 100%; background: white; color: var(--body);
+      border: 1.5px solid var(--card-border); border-radius: 999px;
+      padding: 13px; font-size: 15px; font-weight: 500; font-family: inherit;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      gap: 10px; transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .login-google:hover { border-color: #aaa; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .login-privacy { font-size: 12px; color: var(--muted); text-align: center; margin-top: 20px; line-height: 1.5; }
+
+    /* ─────────────────────────────── */
+    /*  SCREEN 6 — Confidence intro    */
+    /* ─────────────────────────────── */
+    .conf-nav {
+      background: var(--plum); height: 50px;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; flex-shrink: 0; width: 100%;
+    }
+    .conf-nav-title { color: white; font-size: 16px; font-weight: 600; }
+    .conf-nav-x {
+      position: absolute; right: 18px;
+      background: none; border: none; color: white; cursor: pointer;
+      display: flex; align-items: center; padding: 6px;
+      opacity: 0.8; transition: opacity 0.15s;
+    }
+    .conf-nav-x:hover { opacity: 1; }
+    .conf-body {
+      display: flex; align-items: center; flex: 1;
+      padding: 0 80px; gap: 80px; min-height: calc(100vh - 100px);
+    }
+    .conf-left { flex: 0 0 460px; display: flex; align-items: center; justify-content: center; }
+    .conf-circle {
+      width: 440px; height: 440px; border-radius: 50%;
+      background: var(--plum); overflow: hidden;
+      display: flex; align-items: flex-end; justify-content: center;
+    }
+    .conf-circle-inner { width: 100%; height: 100%; position: relative; }
+    .conf-photo-placeholder {
+      width: 100%; height: 100%; display: flex; align-items: center;
+      justify-content: center; opacity: 0.5;
+    }
+    .conf-right { flex: 1; display: flex; flex-direction: column; gap: 0; }
+    .conf-knomee-logo { display: flex; align-items: center; gap: 7px; margin-bottom: 40px; }
+    .conf-headline {
+      font-size: 44px; font-weight: 700; color: var(--plum);
+      line-height: 1.2; margin-bottom: 48px; letter-spacing: -0.5px;
+    }
+    .conf-cta-row { display: flex; align-items: center; gap: 20px; margin-bottom: 20px; }
+    .conf-btn {
+      background: var(--plum); color: white; border: none;
+      border-radius: 999px; padding: 18px 40px;
+      font-size: 20px; font-weight: 700; font-family: inherit;
+      cursor: pointer; transition: background 0.2s, transform 0.1s;
+    }
+    .conf-btn:hover { background: var(--grape); transform: translateY(-1px); }
+    .conf-enter-hint { font-size: 15px; color: var(--muted); }
+    .conf-time { display: flex; align-items: center; gap: 7px; font-size: 15px; color: var(--muted); }
+
+    /* ── Proto nav ── */
+    .proto-wrap {
+      position: fixed; bottom: 20px; right: 20px; z-index: 9999;
+      display: flex; flex-direction: column; align-items: flex-end; gap: 6px;
+    }
+    .proto-label {
+      background: rgba(36,4,70,0.8); color: rgba(255,255,255,0.6);
+      font-size: 9px; font-weight: 700; font-family: 'Poppins', sans-serif;
+      border-radius: 4px; padding: 3px 8px; letter-spacing: 0.5px;
+    }
+    .proto-nav { display: flex; gap: 6px; }
+    .proto-btn {
+      background: var(--plum); color: white; border: none;
+      border-radius: 999px; padding: 8px 14px; font-size: 11px;
+      font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer;
+      box-shadow: 0 4px 16px rgba(36,4,70,0.3); transition: background 0.2s;
+    }
+    .proto-btn:hover { background: var(--grape); }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="navbar-logo">
+    <svg viewBox="0 0 32 32" fill="none">
+      <circle cx="16" cy="16" r="13" stroke="white" stroke-width="2.2"/>
+      <circle cx="16" cy="16" r="7"  stroke="white" stroke-width="2.2"/>
+      <circle cx="16" cy="16" r="2"  fill="white"/>
+    </svg>
+    <span class="navbar-logo-text">knomee</span>
+  </div>
+  <div class="navbar-firm">ACME ADVISORS</div>
+  <div class="navbar-avatar">S</div>
+</nav>
+
+<!-- ══════════════════════════════ -->
+<!-- SCREEN 1 — Welcome             -->
+<!-- ══════════════════════════════ -->
+<div class="screen active" id="screen1">
+
+  <h1 class="s1-headline fade-up" data-delay="0">
+    Welcome!<br>Wealth is about experiencing life fully.
+  </h1>
+  <p class="s1-sub fade-up" data-delay="80">
+    Take a few minutes to get clear on what matters most and what your money is really for.
+  </p>
+
+  <div class="get-label fade-up" data-delay="140">What you'll get:</div>
+  <div class="card-tray fade-up" data-delay="190">
+    <div class="feature-card">
+      <div class="feature-card-inner">
+        <div class="feature-card-top">
+          <span class="feature-icon">⚡</span>
+          <span class="feature-title">Discover What Matters Most</span>
+        </div>
+        <p class="feature-body">A quick, guided experience that clarifies your values, goals, and priorities.</p>
+      </div>
+      <div class="feature-accent"></div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-card-inner">
+        <div class="feature-card-top">
+          <span class="feature-icon">💡</span>
+          <span class="feature-title">See Your Personal Insights</span>
+        </div>
+        <p class="feature-body">Receive a personalized summary of what's driving your financial decisions.</p>
+      </div>
+      <div class="feature-accent"></div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-card-inner">
+        <div class="feature-card-top">
+          <span class="feature-icon">✦</span>
+          <span class="feature-title">Get Your 3 Most Important Money Questions</span>
+        </div>
+        <p class="feature-body">Walk away with questions to help you think, plan, and prepare for what's next.</p>
+      </div>
+      <div class="feature-accent"></div>
+    </div>
+  </div>
+
+  <div class="fj-block fade-up" data-delay="270">
+    <div class="fj-eyebrow">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+      Get a taste — first question
+    </div>
+    <h2 class="fj-q">I want money to help me with…</h2>
+    <p class="fj-qs">Choose what feels most relevant today. Up to 3.</p>
+    <div class="chips" id="q1Chips">
+      <div class="chip" onclick="selectQ1(this)">Enjoying the moment</div>
+      <div class="chip" onclick="selectQ1(this)">Comfort</div>
+      <div class="chip" onclick="selectQ1(this)">Security</div>
+      <div class="chip" onclick="selectQ1(this)">Philanthropy and giving</div>
+      <div class="chip" onclick="selectQ1(this)">Supporting my family</div>
+      <div class="chip" onclick="selectQ1(this)">Choice / Freedom</div>
+      <div class="chip" onclick="selectQ1(this)">Simplicity</div>
+      <div class="chip" onclick="selectQ1(this)">Status</div>
+    </div>
+    <p class="chip-hint" id="chipHint">Select at least one to continue</p>
+  </div>
+
+  <div class="cta-wrap fade-up" data-delay="330">
+    <button class="cta-btn" id="ctaBtn" disabled onclick="goTo(2)">
+      Discover Financial Joy
+    </button>
+    <div class="cta-time">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      Est time: 8 min
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SCREEN 2 — FJ Q1 (Typeform)             -->
+<!-- ══════════════════════════════════════════ -->
+<div class="screen adv-screen" id="screen2" style="padding:0;">
+  <div class="adv-nav">
+    <div class="adv-nav-logo">
+      <svg width="18" height="18" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="13" stroke="white" stroke-width="2.2"/><circle cx="16" cy="16" r="7" stroke="white" stroke-width="2.2"/><circle cx="16" cy="16" r="2" fill="white"/></svg>
+      <span class="adv-nav-logo-text">knomee</span>
+    </div>
+    <span class="adv-nav-title">Financial Joy</span>
+    <button class="adv-nav-x" onclick="goTo(1)">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="adv-body">
+    <div class="adv-qnum fade-up" data-delay="0">1 →</div>
+    <h2 class="adv-headline fade-up" data-delay="60">I want money to help me with…</h2>
+    <div class="chips fade-up" data-delay="120" id="q1ChipsAdv" style="max-width:660px;">
+      <div class="chip adv-chip" onclick="selectQ1adv(this)">Enjoying the moment</div>
+      <div class="chip adv-chip" onclick="selectQ1adv(this)">Comfort</div>
+      <div class="chip adv-chip" onclick="selectQ1adv(this)">Security</div>
+      <div class="chip adv-chip" onclick="selectQ1adv(this)">Philanthropy and giving</div>
+      <div class="chip adv-chip" onclick="selectQ1adv(this)">Supporting my family</div>
+      <div class="chip adv-chip" onclick="selectQ1adv(this)">Choice / Freedom</div>
+      <div class="chip adv-chip" onclick="selectQ1adv(this)">Simplicity</div>
+      <div class="chip adv-chip" onclick="selectQ1adv(this)">Status</div>
+    </div>
+    <p class="chip-hint fade-up" data-delay="160" id="q1AdvHint" style="text-align:left;">Choose up to 3</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SCREEN 3 — FJ Q2 matrix (Typeform)        -->
+<!-- ══════════════════════════════════════════ -->
+<div class="screen adv-screen" id="screen3" style="padding:0;">
+  <div class="adv-nav">
+    <div class="adv-nav-logo">
+      <svg width="18" height="18" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="13" stroke="white" stroke-width="2.2"/><circle cx="16" cy="16" r="7" stroke="white" stroke-width="2.2"/><circle cx="16" cy="16" r="2" fill="white"/></svg>
+      <span class="adv-nav-logo-text">knomee</span>
+    </div>
+    <span class="adv-nav-title">Financial Joy</span>
+    <button class="adv-nav-x" onclick="goTo(1)">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="adv-body">
+    <div class="adv-qnum fade-up" data-delay="0">2 →</div>
+    <h2 class="adv-headline fade-up" data-delay="60">Right now, how would you like to direct attention to these areas…</h2>
+    <div class="matrix-wrap fade-up" data-delay="130">
+      <div class="matrix-header">
+        <div></div>
+        <div class="matrix-header-cell">+ More</div>
+        <div class="matrix-header-cell">= Same</div>
+        <div class="matrix-header-cell">− Less</div>
+      </div>
+      <div class="matrix-row" id="mr0"><span class="matrix-row-label">Work &amp; Career</span><div class="matrix-radio-cell"><div class="matrix-radio" onclick="setMatrix(0,'more')"></div></div><div class="matrix-radio-cell"><div class="matrix-radio checked" onclick="setMatrix(0,'same')"></div></div><div class="matrix-radio-cell"><div class="matrix-radio" onclick="setMatrix(0,'less')"></div></div></div>
+      <div class="matrix-row" id="mr1"><span class="matrix-row-label">Financial Planning &amp; Management</span><div class="matrix-radio-cell"><div class="matrix-radio" onclick="setMatrix(1,'more')"></div></div><div class="matrix-radio-cell"><div class="matrix-radio checked" onclick="setMatrix(1,'same')"></div></div><div class="matrix-radio-cell"><div class="matrix-radio" onclick="setMatrix(1,'less')"></div></div></div>
+      <div class="matrix-row" id="mr2"><span class="matrix-row-label">Health &amp; Wellness</span><div class="matrix-radio-cell"><div class="matrix-radio" onclick="setMatrix(2,'more')"></div></div><div class="matrix-radio-cell"><div class="matrix-radio checked" onclick="setMatrix(2,'same')"></div></div><div class="matrix-radio-cell"><div class="matrix-radio" onclick="setMatrix(2,'less')"></div></div></div>
+      <div class="matrix-row" id="mr3"><span class="matrix-row-label">Family &amp; Relationships</span><div class="matrix-radio-cell"><div class="matrix-radio" onclick="setMatrix(3,'more')"></div></div><div class="matrix-radio-cell"><div class="matrix-radio checked" onclick="setMatrix(3,'same')"></div></div><div class="matrix-radio-cell"><div class="matrix-radio" onclick="setMatrix(3,'less')"></div></div></div>
+      <div class="matrix-row" id="mr4"><span class="matrix-row-label">Hobbies &amp; Interests</span><div class="matrix-radio-cell"><div class="matrix-radio" onclick="setMatrix(4,'more')"></div></div><div class="matrix-radio-cell"><div class="matrix-radio checked" onclick="setMatrix(4,'same')"></div></div><div class="matrix-radio-cell"><div class="matrix-radio" onclick="setMatrix(4,'less')"></div></div></div>
+      <div class="matrix-row" id="mr5"><span class="matrix-row-label">Travel &amp; Adventure</span><div class="matrix-radio-cell"><div class="matrix-radio" onclick="setMatrix(5,'more')"></div></div><div class="matrix-radio-cell"><div class="matrix-radio checked" onclick="setMatrix(5,'same')"></div></div><div class="matrix-radio-cell"><div class="matrix-radio" onclick="setMatrix(5,'less')"></div></div></div>
+      <div class="matrix-row" id="mr6"><span class="matrix-row-label">Home Life</span><div class="matrix-radio-cell"><div class="matrix-radio" onclick="setMatrix(6,'more')"></div></div><div class="matrix-radio-cell"><div class="matrix-radio checked" onclick="setMatrix(6,'same')"></div></div><div class="matrix-radio-cell"><div class="matrix-radio" onclick="setMatrix(6,'less')"></div></div></div>
+      <span class="matrix-clear" onclick="clearMatrix()">Clear all</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════ -->
+<!-- SCREEN 4 — Loading            -->
+<!-- ══════════════════════════════ -->
+<div class="screen" id="screen4" style="background:var(--plum);justify-content:center;">
+  <div class="load-inner">
+    <div class="load-logo">
+      <svg width="26" height="26" viewBox="0 0 32 32" fill="none">
+        <circle cx="16" cy="16" r="13" stroke="white" stroke-width="2.5"/>
+        <circle cx="16" cy="16" r="7"  stroke="white" stroke-width="2.5"/>
+        <circle cx="16" cy="16" r="2"  fill="white"/>
+      </svg>
+      <span class="load-logo-text">knomee</span>
+    </div>
+    <div class="load-ring"></div>
+    <p class="load-msg" id="loadMsg">Building your Financial ID…</p>
+    <div class="load-bar-track">
+      <div class="load-bar-fill" id="loadBar"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════ -->
+<!-- SCREEN 5 — Reveal             -->
+<!-- ══════════════════════════════ -->
+<div class="screen" id="screen5">
+
+  <h2 class="reveal-headline fade-up" data-delay="0">Here's what we found.</h2>
+  <p class="reveal-sub fade-up" data-delay="110">Based on your answers, here's a glimpse of your Financial ID.</p>
+
+  <div class="reveal-cards fade-up" data-delay="160">
+
+    <!-- Key Highlight: Financial Joy -->
+    <div class="kh-card fid-shell fade-up" data-delay="200" id="khCard">
+      <div class="kh-section-header">
+        <span class="kh-section-icon">🏆</span>
+        <div>
+          <div class="kh-section-title">Key Highlights</div>
+          <div class="kh-section-meta">Financial Joy</div>
+        </div>
+      </div>
+      <div class="kh-highlight">
+        <div class="kh-hl-label">Your top driver</div>
+        <div class="kh-hl-headline" id="khHeadline">Security &amp; Peace of Mind</div>
+        <div class="kh-hl-chips" id="khTags"></div>
+        <div class="kh-hl-divider"></div>
+        <div class="kh-hl-insight-label">Insight</div>
+        <p class="kh-hl-insight" id="khInsight"></p>
+      </div>
+    </div>
+
+    <!-- Financial ID — Financial Joy section card -->
+    <div class="fid-card fid-shell fade-up" data-delay="340" id="fidCard">
+      <div class="fid-card-header">
+        <span class="fid-card-icon">🎯</span>
+        <div class="fid-card-title">Financial Joy</div>
+      </div>
+      <div class="fid-section">
+        <div class="fid-section-label">I want money to help me with</div>
+        <div class="fid-chips" id="fidQ1Chips"></div>
+      </div>
+      <div class="fid-section">
+        <div class="fid-section-label">Areas I want to direct more attention to</div>
+        <div class="fid-chips" id="fidQ2Chip"></div>
+      </div>
+      <div class="fid-section">
+        <div class="fid-section-label">Your 3 questions to explore with your advisor</div>
+        <div class="fid-questions" id="fidQuestions"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="reveal-cta fade-up" data-delay="260">
+    <button class="save-btn" onclick="goTo(5)">Save my Financial ID →</button>
+    <span class="reveal-skip" onclick="goTo(6)">Continue without saving</span>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════ -->
+<!-- SCREEN 6 — Login / Save       -->
+<!-- ══════════════════════════════ -->
+<div class="screen" id="screen6" style="justify-content:center;">
+  <div class="login-card fade-up" data-delay="0">
+    <div class="login-logo">
+      <svg width="22" height="22" viewBox="0 0 32 32" fill="none">
+        <circle cx="16" cy="16" r="13" stroke="var(--plum)" stroke-width="2.2"/>
+        <circle cx="16" cy="16" r="7"  stroke="var(--plum)" stroke-width="2.2"/>
+        <circle cx="16" cy="16" r="2"  fill="var(--plum)"/>
+      </svg>
+      <span class="login-logo-text">knomee</span>
+    </div>
+    <h2 class="login-headline">Save your Financial ID</h2>
+    <p class="login-sub">Create a free account to keep your results and share them with your advisor.</p>
+    <div class="login-field-wrap">
+      <label class="login-label">Email address</label>
+      <input class="login-input" type="email" placeholder="you@example.com">
+    </div>
+    <button class="login-btn" onclick="goTo(6)">Create account &amp; save →</button>
+    <div class="login-or">or</div>
+    <button class="login-google">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Continue with Google
+    </button>
+    <p class="login-privacy">Your data is private and never shared without your permission.</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<!-- SCREEN 7 — Confidence adventure intro -->
+<!-- ══════════════════════════════════════ -->
+<div class="screen" id="screen7" style="padding:0; min-height:calc(100vh - 50px);">
+
+  <!-- Override navbar for this screen -->
+  <div class="conf-nav">
+    <span class="conf-nav-title">Confidence</span>
+    <button class="conf-nav-x" onclick="goTo(1)">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+
+  <div class="conf-body">
+    <!-- Left: photo circle -->
+    <div class="conf-left fade-up" data-delay="0">
+      <div class="conf-circle">
+        <div class="conf-circle-inner">
+          <!-- Placeholder photo area — replace with real asset -->
+          <div class="conf-photo-placeholder">
+            <svg viewBox="0 0 200 220" fill="none" xmlns="http://www.w3.org/2000/svg" width="200">
+              <!-- Silhouettes suggestion -->
+              <ellipse cx="70" cy="80" rx="28" ry="34" fill="rgba(255,255,255,0.25)"/>
+              <ellipse cx="70" cy="160" rx="46" ry="60" fill="rgba(255,255,255,0.2)"/>
+              <ellipse cx="130" cy="70" rx="24" ry="30" fill="rgba(255,255,255,0.2)"/>
+              <ellipse cx="130" cy="155" rx="40" ry="55" fill="rgba(255,255,255,0.15)"/>
+              <!-- Dog -->
+              <ellipse cx="90" cy="175" rx="22" ry="14" fill="rgba(255,255,255,0.18)"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: content -->
+    <div class="conf-right fade-up" data-delay="100">
+      <div class="conf-knomee-logo">
+        <svg width="20" height="20" viewBox="0 0 32 32" fill="none">
+          <circle cx="16" cy="16" r="13" stroke="var(--plum)" stroke-width="2.2"/>
+          <circle cx="16" cy="16" r="7"  stroke="var(--plum)" stroke-width="2.2"/>
+          <circle cx="16" cy="16" r="2"  fill="var(--plum)"/>
+        </svg>
+        <span style="font-size:14px;font-weight:700;color:var(--plum);">knomee</span>
+      </div>
+      <h2 class="conf-headline">Let's explore how you feel about your finances and what brings you peace of mind.</h2>
+      <div class="conf-cta-row">
+        <button class="conf-btn" onclick="goTo(1)">Get started</button>
+        <span class="conf-enter-hint">press <strong>Enter</strong> ↵</span>
+      </div>
+      <div class="conf-time">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Takes 1 minute
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Up/down adventure arrows (shown on screens 2–3) -->
+<div class="adv-arrows" id="advArrows">
+  <button class="adv-arrow" id="arrowUp" onclick="advNav(-1)" title="Previous">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+  </button>
+  <button class="adv-arrow" id="arrowDown" onclick="advNav(1)" title="Next">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+  </button>
+</div>
+
+<!-- Proto nav -->
+<div class="proto-wrap">
+  <div class="proto-label" id="protoLabel">SCREEN 1 / 7</div>
+  <div class="proto-nav">
+    <button class="proto-btn" onclick="goTo(1)">1</button>
+    <button class="proto-btn" onclick="goTo(2)">2</button>
+    <button class="proto-btn" onclick="goTo(3)">3</button>
+    <button class="proto-btn" onclick="goTo(4)">4</button>
+    <button class="proto-btn" onclick="goTo(5)">5</button>
+    <button class="proto-btn" onclick="goTo(6)">6</button>
+    <button class="proto-btn" onclick="goTo(7)">7</button>
+  </div>
+</div>
+
+<script>
+  let q1Selected = [];
+  // matrix: array of {label, value} — value: 'more'|'same'|'less', default 'same'
+  const matrixLabels = ['Work & Career','Financial Planning & Management','Health & Wellness','Family & Relationships','Hobbies & Interests','Travel & Adventure','Home Life'];
+  let matrixValues = ['same','same','same','same','same','same','same'];
+
+  /* ── Navigation ── */
+  function goTo(n) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const screen = document.getElementById('screen' + n);
+    screen.classList.add('active');
+    document.getElementById('protoLabel').textContent = 'SCREEN ' + n + ' / 7';
+    window.scrollTo(0, 0);
+
+    // Hide/show main navbar (adventure + confidence screens have their own)
+    document.querySelector('.navbar').style.display = (n >= 2 && n <= 3) || n === 7 ? 'none' : 'flex';
+
+    // Show/hide adventure arrows (screens 2–3 only)
+    var arrows = document.getElementById('advArrows');
+    arrows.classList.toggle('visible', n === 2 || n === 3);
+    if (arrows.classList.contains('visible')) {
+      document.getElementById('arrowUp').disabled = n === 2;
+    }
+
+    if (n === 4) { runLoading(); return; }
+    if (n === 5) { buildReveal(); }
+
+    const els = screen.querySelectorAll('.fade-up');
+    els.forEach(el => { el.classList.remove('in'); el.style.transitionDelay = '0ms'; });
+    requestAnimationFrame(() => {
+      els.forEach(el => {
+        el.style.transitionDelay = (parseInt(el.dataset.delay) || 0) + 'ms';
+        requestAnimationFrame(() => el.classList.add('in'));
+      });
+    });
+  }
+
+  /* ── Q1 chip logic ── */
+  function selectQ1(el) {
+    if (el.classList.contains('selected')) {
+      el.classList.remove('selected');
+      q1Selected = q1Selected.filter(v => v !== el.textContent.trim());
+    } else {
+      if (q1Selected.length >= 3) return;
+      el.classList.add('selected');
+      q1Selected.push(el.textContent.trim());
+    }
+    const btn  = document.getElementById('ctaBtn');
+    const hint = document.getElementById('chipHint');
+    const ready = q1Selected.length > 0;
+    btn.disabled = !ready;
+    hint.textContent = ready ? 'Up to ' + (3 - q1Selected.length) + ' more · or continue' : 'Select at least one to continue';
+    if (ready) {
+      btn.classList.remove('pulse');
+      void btn.offsetWidth;
+      btn.classList.add('pulse');
+    } else {
+      btn.classList.remove('pulse');
+    }
+  }
+
+  /* ── Matrix logic ── */
+  const colOrder = ['more','same','less'];
+  function setMatrix(rowIdx, val) {
+    matrixValues[rowIdx] = val;
+    const row = document.getElementById('mr' + rowIdx);
+    const radios = row.querySelectorAll('.matrix-radio');
+    radios.forEach(function(r, i) {
+      r.classList.toggle('checked', colOrder[i] === val);
+    });
+  }
+  function clearMatrix() {
+    matrixValues = ['same','same','same','same','same','same','same'];
+    for (var i = 0; i < 7; i++) { setMatrix(i, 'same'); }
+  }
+
+  /* ── Loading → Reveal ── */
+  function startReveal() { goTo(3); }
+
+  function runLoading() {
+    const bar  = document.getElementById('loadBar');
+    const msg  = document.getElementById('loadMsg');
+    const msgs = ['Building your Financial ID…','Matching your values…','Surfacing your key insights…','Almost ready…'];
+    let pct = 0, mi = 0;
+    bar.style.width = '0%';
+    msg.textContent = msgs[0];
+
+    const iv = setInterval(() => {
+      pct += Math.random() * 10 + 6;
+      if (pct > 100) pct = 100;
+      bar.style.width = pct + '%';
+      if (pct > 28 && mi < 1) msg.textContent = msgs[++mi];
+      if (pct > 56 && mi < 2) msg.textContent = msgs[++mi];
+      if (pct > 80 && mi < 3) msg.textContent = msgs[++mi];
+      if (pct >= 100) {
+        clearInterval(iv);
+        setTimeout(() => {
+          const s = document.getElementById('screen3');
+          s.classList.remove('active');
+          // animate fade to white
+          s.style.transition = 'opacity 0.4s';
+          s.style.opacity = '0';
+          setTimeout(() => { s.style.opacity = ''; s.style.transition = ''; goTo(4); }, 400);
+        }, 600);
+      }
+    }, 90);
+  }
+
+  /* ── Build reveal cards from selections ── */
+  const headlineMap = {
+    'Security':               'Security &amp; Peace of Mind',
+    'Supporting my family':   'Family &amp; Protection',
+    'Enjoying the moment':    'Joy &amp; Living Fully',
+    'Comfort':                'Comfort &amp; Ease',
+    'Choice / Freedom':       'Freedom &amp; Choice',
+    'Philanthropy and giving':'Purpose &amp; Impact',
+    'Simplicity':             'Simplicity &amp; Clarity',
+    'Status':                 'Achievement &amp; Recognition',
+  };
+  const insightMap = {
+    'Security':               '"You want money to give you a solid foundation — the certainty that things will be okay no matter what."',
+    'Supporting my family':   '"Your financial life is deeply rooted in the people you love. Money is a way to protect and lift them."',
+    'Enjoying the moment':    '"You\'re drawn to the fullness of life now, not later. Money is a tool for living richly in the present."',
+    'Comfort':                '"What matters most to you is ease — a life without friction, worry, or unnecessary hardship."',
+    'Choice / Freedom':       '"You want money to open doors, not close them. Freedom to choose is your north star."',
+    'Philanthropy and giving':'"Impact drives you. Money becomes meaningful when it flows beyond yourself."',
+    'Simplicity':             '"A clear, uncluttered financial life — not more, but enough. You value peace over complexity."',
+    'Status':                 '"You\'re motivated by achievement and the recognition that comes with it. Money signals success."',
+  };
+  const questionMap = {
+    'Security':               ['What would it take for you to feel truly financially secure?','How much is "enough" — and how did you arrive at that number?','What\'s the one financial risk that worries you most right now?'],
+    'Supporting my family':   ['How are your financial decisions shaped by your family responsibilities?','What does a financially healthy family look like to you?','How are you thinking about the legacy you want to leave?'],
+    'Enjoying the moment':    ['Are there experiences you\'re deferring for financial reasons — and should you be?','How do you balance living well now with building for later?','What does money enable in your day-to-day life that matters most?'],
+    'Comfort':                ['What does financial comfort mean to you in practical terms?','How are you managing money-related stress in your daily life?','What would need to change for your financial life to feel easier?'],
+    'Choice / Freedom':       ['What would financial freedom actually look like — and how close are you?','What decisions in your life are currently constrained by money?','If money weren\'t a factor, what would you do differently?'],
+    'Philanthropy and giving':['How does giving fit into your financial plan today?','What causes or communities do you want your money to support?','How are you thinking about impact alongside growth?'],
+    'Simplicity':             ['What would a simpler financial life look like for you?','Are there areas where complexity is creating friction or stress?','What are you willing to give up in exchange for more clarity?'],
+    'Status':                 ['What does financial success look like to you — and how do you measure it?','What milestones are you working toward, and why do they matter?','How important is recognition versus security in your financial life?'],
+  };
+
+  function buildReveal() {
+    const top = q1Selected[0] || 'Security';
+
+    document.getElementById('khHeadline').innerHTML = headlineMap[top] || top;
+    document.getElementById('khInsight').textContent = insightMap[top] || '"Your relationship with money reflects what matters most to you."';
+    document.getElementById('khTags').innerHTML = (q1Selected.length ? q1Selected : [top])
+      .map(v => `<span class="kh-hl-chip">${v}</span>`).join('');
+
+    document.getElementById('fidQ1Chips').innerHTML = (q1Selected.length ? q1Selected : [top])
+      .map(v => `<span class="fid-chip">${v}</span>`).join('');
+
+    // Show areas marked "more" in the matrix
+    const moreAreas = matrixLabels.filter(function(_, i){ return matrixValues[i] === 'more'; });
+    document.getElementById('fidQ2Chip').innerHTML = moreAreas.length
+      ? moreAreas.map(function(v){ return '<span class="fid-chip">' + v + '</span>'; }).join('')
+      : '<span class="fid-chip" style="color:var(--muted)">No areas selected for more</span>';
+
+    const qs = questionMap[top] || ['What does financial wellbeing mean to you personally?','What\'s one area of your finances you wish felt more sorted?','What would you want to understand better about your money?'];
+    document.getElementById('fidQuestions').innerHTML = qs.map(q =>
+      `<div class="fid-question">${q}</div>`
+    ).join('');
+  }
+
+  /* ── Init ── */
+  goTo(1);
+</script>
+</body>
+</html>
