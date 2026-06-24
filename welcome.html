@@ -20,13 +20,13 @@
       --card-bg:     rgba(36,4,70,0.05);
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { font-family: 'Poppins', sans-serif; background: white; color: var(--body); min-height: 100vh; }
+    html, body { font-family: 'Poppins', sans-serif; background: white; color: var(--body); height: 100%; overflow: hidden; }
 
     /* ── Navbar ── */
     .navbar {
       height: 50px; background: var(--plum);
       display: flex; align-items: center; padding: 0 24px;
-      position: relative; z-index: 10;
+      position: relative; z-index: 10; flex-shrink: 0;
     }
     .navbar-logo { display: flex; align-items: center; gap: 7px; }
     .navbar-logo svg { width: 20px; height: 20px; }
@@ -45,9 +45,10 @@
 
     /* ── Screens ── */
     .screen {
-      display: none; min-height: calc(100vh - 50px);
+      display: none; height: calc(100vh - 50px);
       flex-direction: column; align-items: center;
-      padding: 64px 40px 100px;
+      padding: clamp(20px, 3.5vh, 64px) 40px clamp(28px, 4vh, 80px);
+      overflow-y: auto;
     }
     .screen.active { display: flex; }
 
@@ -62,16 +63,18 @@
     /*  SCREEN 1 — Welcome             */
     /* ─────────────────────────────── */
     .s1-headline {
-      font-size: 48px; font-weight: 500; color: var(--plum);
-      line-height: 1.4; letter-spacing: -1.2px; text-align: center; margin-bottom: 24px;
+      font-size: clamp(26px, 3.2vw, 48px); font-weight: 500; color: var(--plum);
+      line-height: 1.3; letter-spacing: -1px; text-align: center;
+      margin-bottom: clamp(8px, 1.2vh, 24px); flex-shrink: 0;
     }
     .s1-sub {
-      font-size: 22px; color: var(--slate); line-height: 1.5;
-      text-align: center; max-width: 700px; margin-bottom: 72px;
+      font-size: clamp(14px, 1.4vw, 20px); color: var(--slate); line-height: 1.5;
+      text-align: center; max-width: 700px;
+      margin-bottom: clamp(16px, 2.5vh, 48px); flex-shrink: 0;
     }
     .get-label {
-      font-size: 22px; color: var(--body); text-align: left;
-      width: 100%; max-width: 960px; margin-bottom: 8px;
+      font-size: clamp(15px, 1.4vw, 20px); color: var(--body); text-align: left;
+      width: 100%; margin-bottom: 6px; flex-shrink: 0;
     }
     .card-tray {
       width: 100%; max-width: 960px;
@@ -79,51 +82,71 @@
       padding: 24px; display: flex; gap: 24px; margin-bottom: 56px;
     }
     .feature-card {
-      flex: 1; background: white; border: 1px solid var(--card-border);
+      flex: 1; min-height: 0; background: white; border: 1px solid var(--card-border);
       border-radius: 16px; overflow: hidden; display: flex; flex-direction: column;
     }
-    .feature-card-inner { flex: 1; padding: 24px; }
-    .feature-card-top { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
-    .feature-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
-    .feature-title { font-size: 16px; font-weight: 500; color: var(--body); line-height: 1.3; }
-    .feature-body { font-size: 14px; color: var(--body); line-height: 1.5; }
-    .feature-accent { height: 8px; background: var(--grape); flex-shrink: 0; }
+    .feature-card-inner { flex: 1; min-height: 0; padding: clamp(12px, 1.5vh, 24px) clamp(12px, 1.5vw, 24px); overflow: hidden; }
+    .feature-card-top { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+    .feature-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .feature-title { font-size: clamp(13px, 1.1vw, 16px); font-weight: 500; color: var(--body); line-height: 1.3; }
+    .feature-body { font-size: clamp(12px, 1vw, 14px); color: var(--body); line-height: 1.45; }
+    .feature-accent { height: 6px; background: var(--grape); flex-shrink: 0; }
 
-    .fj-block { width: 100%; max-width: 760px; margin-bottom: 56px; text-align: center; }
-    .fj-eyebrow {
-      font-size: 13px; font-weight: 600; color: var(--teal);
-      text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 14px;
-      display: flex; align-items: center; gap: 7px; justify-content: center;
+    /* Two-column landing layout */
+    .s1-two-col {
+      display: flex; gap: clamp(32px, 5vw, 80px); width: 100%; max-width: 1100px;
+      align-items: stretch; flex: 1; min-height: 0;
     }
-    .fj-q  { font-size: 22px; font-weight: 700; color: var(--plum); margin-bottom: 6px; }
-    .fj-qs { font-size: 14px; color: var(--muted); margin-bottom: 22px; }
-    .chips { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+    .s1-left { flex: 1; min-width: 0; display: flex; flex-direction: column; min-height: 0; }
+    .card-tray-col { display: flex; flex-direction: column; gap: clamp(8px, 1vh, 14px); margin-top: 8px; flex: 1; min-height: 0; }
+
+    /* Right panel — "door/window" into the adventure */
+    .s1-right {
+      flex: 1; min-width: 0; min-height: 0;
+      background: linear-gradient(145deg, #5a2d8a 0%, #3d1a65 100%);
+      border-radius: 24px;
+      padding: clamp(20px, 3vh, 40px) clamp(20px, 2.5vw, 36px) clamp(20px, 2.5vh, 36px);
+      display: flex; flex-direction: column;
+      box-shadow: 0 8px 32px rgba(36,4,70,0.18), 0 2px 8px rgba(36,4,70,0.08);
+      position: relative; overflow: hidden;
+    }
+    /* subtle inner glow at top */
+    .s1-right::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 160px;
+      background: radial-gradient(ellipse at 50% 0%, rgba(160,100,220,0.35) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .fj-q  { font-size: clamp(16px, 1.5vw, 22px); font-weight: 700; color: white; margin-bottom: 4px; flex-shrink: 0; }
+    .fj-qs { font-size: clamp(12px, 1vw, 14px); color: rgba(255,255,255,0.65); margin-bottom: clamp(12px, 1.8vh, 22px); flex-shrink: 0; }
+    .chips { display: flex; flex-wrap: wrap; gap: clamp(6px, 0.8vh, 10px); justify-content: flex-start; }
     .chip {
-      border: 1.5px solid var(--teal); border-radius: 999px;
-      padding: 11px 22px; font-size: 14px; font-weight: 500; color: var(--teal);
-      cursor: pointer; background: white; user-select: none;
-      transition: background 0.15s, color 0.15s, transform 0.15s, box-shadow 0.15s;
+      border: 1.5px solid rgba(255,255,255,0.3); border-radius: 999px;
+      padding: clamp(7px, 0.9vh, 11px) clamp(14px, 1.5vw, 22px);
+      font-size: clamp(12px, 1vw, 14px); font-weight: 500; color: rgba(255,255,255,0.8);
+      cursor: pointer; background: rgba(255,255,255,0.1); user-select: none;
+      transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.15s, box-shadow 0.15s;
     }
-    .chip:hover { background: #f0faf8; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(61,189,170,0.2); }
-    .chip.selected { background: var(--teal); color: white; transform: scale(1.03); box-shadow: 0 4px 16px rgba(61,189,170,0.35); }
-    .chip-hint { font-size: 12px; color: var(--muted); margin-top: 10px; }
+    .chip:hover { background: rgba(255,255,255,0.18); color: white; border-color: rgba(255,255,255,0.55); transform: translateY(-2px); }
+    .chip.selected { background: white; color: #3d1a65; border-color: white; transform: scale(1.03); box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+    .chip-hint { font-size: 11px; color: rgba(255,255,255,0.45); margin-top: 8px; flex-shrink: 0; }
 
-    .cta-wrap { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+    .cta-wrap { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; margin-top: auto; padding-top: clamp(16px, 2vh, 32px); flex-shrink: 0; }
     .cta-btn {
-      background: var(--plum); color: white; border: none;
-      border-radius: 999px; padding: 22px 48px;
-      font-size: 22px; font-weight: 600; font-family: inherit;
+      background: white; color: var(--plum); border: none;
+      border-radius: 999px; padding: clamp(12px, 1.5vh, 18px) clamp(24px, 2.5vw, 40px);
+      font-size: clamp(15px, 1.3vw, 18px); font-weight: 700; font-family: inherit;
       cursor: pointer; transition: background 0.2s, transform 0.1s, opacity 0.2s, box-shadow 0.2s;
-      box-shadow: 0 4px 20px rgba(36,4,70,0.22);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
     }
-    .cta-btn:hover:not(:disabled) { background: var(--grape); transform: translateY(-1px); box-shadow: 0 6px 28px rgba(118,57,161,0.3); }
-    .cta-btn:disabled { opacity: 0.32; cursor: not-allowed; box-shadow: none; }
+    .cta-btn:hover:not(:disabled) { background: var(--grape-light); transform: translateY(-1px); box-shadow: 0 6px 28px rgba(0,0,0,0.25); }
+    .cta-btn:disabled { opacity: 0.28; cursor: not-allowed; box-shadow: none; }
     @keyframes ctaPulse {
-      0%,100% { box-shadow: 0 4px 20px rgba(36,4,70,0.22); }
-      50%      { box-shadow: 0 4px 32px rgba(36,4,70,0.42), 0 0 0 8px rgba(36,4,70,0.07); }
+      0%,100% { box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+      50%      { box-shadow: 0 4px 32px rgba(255,255,255,0.35), 0 0 0 8px rgba(255,255,255,0.08); }
     }
     .cta-btn.pulse { animation: ctaPulse 2.2s ease-in-out infinite; }
-    .cta-time { display: flex; align-items: center; gap: 7px; font-size: 16px; color: var(--muted); }
+    .cta-time { display: flex; align-items: center; gap: 7px; font-size: 13px; color: rgba(255,255,255,0.5); }
 
     /* ─────────────────────────────── */
     /*  Typeform adventure screens     */
@@ -178,8 +201,8 @@
     .adv-screen { padding: 0 !important; }
     .adv-body {
       flex: 1; display: flex; flex-direction: column; justify-content: center;
-      padding: 48px max(48px, calc(50% - 400px));
-      min-height: calc(100vh - 50px);
+      padding: clamp(24px, 4vh, 48px) max(48px, calc(50% - 400px));
+      overflow-y: auto;
     }
     .adv-chip { border-color: var(--plum) !important; color: var(--plum) !important; }
     .adv-chip:hover { background: rgba(36,4,70,0.05) !important; color: var(--plum) !important; }
@@ -389,12 +412,12 @@
     }
     .conf-nav-x:hover { opacity: 1; }
     .conf-body {
-      display: flex; align-items: center; flex: 1;
-      padding: 0 80px; gap: 80px; min-height: calc(100vh - 100px);
+      display: flex; align-items: center; flex: 1; min-height: 0;
+      padding: 0 clamp(32px, 5vw, 80px); gap: clamp(32px, 5vw, 80px);
     }
-    .conf-left { flex: 0 0 460px; display: flex; align-items: center; justify-content: center; }
+    .conf-left { flex: 0 0 auto; display: flex; align-items: center; justify-content: center; }
     .conf-circle {
-      width: 440px; height: 440px; border-radius: 50%;
+      width: clamp(240px, 38vh, 440px); height: clamp(240px, 38vh, 440px); border-radius: 50%;
       background: var(--plum); overflow: hidden;
       display: flex; align-items: flex-end; justify-content: center;
     }
@@ -406,8 +429,8 @@
     .conf-right { flex: 1; display: flex; flex-direction: column; gap: 0; }
     .conf-knomee-logo { display: flex; align-items: center; gap: 7px; margin-bottom: 40px; }
     .conf-headline {
-      font-size: 44px; font-weight: 700; color: var(--plum);
-      line-height: 1.2; margin-bottom: 48px; letter-spacing: -0.5px;
+      font-size: clamp(24px, 3.2vw, 44px); font-weight: 700; color: var(--plum);
+      line-height: 1.2; margin-bottom: clamp(24px, 4vh, 48px); letter-spacing: -0.5px;
     }
     .conf-cta-row { display: flex; align-items: center; gap: 20px; margin-bottom: 20px; }
     .conf-btn {
@@ -420,10 +443,10 @@
     .conf-enter-hint { font-size: 15px; color: var(--muted); }
     .conf-time { display: flex; align-items: center; gap: 7px; font-size: 15px; color: var(--muted); }
 
-    /* ── Proto nav ── */
+    /* ── Proto nav — moved to bottom-LEFT so arrows (bottom-right) are never blocked ── */
     .proto-wrap {
-      position: fixed; bottom: 20px; right: 20px; z-index: 9999;
-      display: flex; flex-direction: column; align-items: flex-end; gap: 6px;
+      position: fixed; bottom: 20px; left: 20px; z-index: 100;
+      display: flex; flex-direction: column; align-items: flex-start; gap: 6px;
     }
     .proto-label {
       background: rgba(36,4,70,0.8); color: rgba(255,255,255,0.6);
@@ -467,74 +490,78 @@
     Take a few minutes to get clear on what matters most and what your money is really for.
   </p>
 
-  <div class="get-label fade-up" data-delay="140">What you'll get:</div>
-  <div class="card-tray fade-up" data-delay="190">
-    <div class="feature-card">
-      <div class="feature-card-inner">
-        <div class="feature-card-top">
-          <span class="feature-icon">⚡</span>
-          <span class="feature-title">Discover What Matters Most</span>
-        </div>
-        <p class="feature-body">A quick, guided experience that clarifies your values, goals, and priorities.</p>
-      </div>
-      <div class="feature-accent"></div>
-    </div>
-    <div class="feature-card">
-      <div class="feature-card-inner">
-        <div class="feature-card-top">
-          <span class="feature-icon">💡</span>
-          <span class="feature-title">See Your Personal Insights</span>
-        </div>
-        <p class="feature-body">Receive a personalized summary of what's driving your financial decisions.</p>
-      </div>
-      <div class="feature-accent"></div>
-    </div>
-    <div class="feature-card">
-      <div class="feature-card-inner">
-        <div class="feature-card-top">
-          <span class="feature-icon">✦</span>
-          <span class="feature-title">Get Your 3 Most Important Money Questions</span>
-        </div>
-        <p class="feature-body">Walk away with questions to help you think, plan, and prepare for what's next.</p>
-      </div>
-      <div class="feature-accent"></div>
-    </div>
-  </div>
+  <!-- Two-column: cards left, Q1 chips right -->
+  <div class="s1-two-col fade-up" data-delay="140">
 
-  <div class="fj-block fade-up" data-delay="270">
-    <div class="fj-eyebrow">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
-      Get a taste — first question
+    <!-- LEFT: What you'll get -->
+    <div class="s1-left">
+      <div class="get-label">What you'll get:</div>
+      <div class="card-tray-col">
+        <div class="feature-card">
+          <div class="feature-card-inner">
+            <div class="feature-card-top">
+              <span class="feature-icon">⚡</span>
+              <span class="feature-title">Discover What Matters Most</span>
+            </div>
+            <p class="feature-body">A quick, guided experience that clarifies your values, goals, and priorities.</p>
+          </div>
+          <div class="feature-accent"></div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card-inner">
+            <div class="feature-card-top">
+              <span class="feature-icon">💡</span>
+              <span class="feature-title">See Your Personal Insights</span>
+            </div>
+            <p class="feature-body">Receive a personalized summary of what's driving your financial decisions.</p>
+          </div>
+          <div class="feature-accent"></div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card-inner">
+            <div class="feature-card-top">
+              <span class="feature-icon">✦</span>
+              <span class="feature-title">Get Your 3 Most Important Money Questions</span>
+            </div>
+            <p class="feature-body">Walk away with questions to help you think, plan, and prepare for what's next.</p>
+          </div>
+          <div class="feature-accent"></div>
+        </div>
+      </div>
     </div>
-    <h2 class="fj-q">I want money to help me with…</h2>
-    <p class="fj-qs">Choose what feels most relevant today. Up to 3.</p>
-    <div class="chips" id="q1Chips">
-      <div class="chip" onclick="selectQ1(this)">Enjoying the moment</div>
-      <div class="chip" onclick="selectQ1(this)">Comfort</div>
-      <div class="chip" onclick="selectQ1(this)">Security</div>
-      <div class="chip" onclick="selectQ1(this)">Philanthropy and giving</div>
-      <div class="chip" onclick="selectQ1(this)">Supporting my family</div>
-      <div class="chip" onclick="selectQ1(this)">Choice / Freedom</div>
-      <div class="chip" onclick="selectQ1(this)">Simplicity</div>
-      <div class="chip" onclick="selectQ1(this)">Status</div>
-    </div>
-    <p class="chip-hint" id="chipHint">Select at least one to continue</p>
-  </div>
 
-  <div class="cta-wrap fade-up" data-delay="330">
-    <button class="cta-btn" id="ctaBtn" disabled onclick="goTo(2)">
-      Discover Financial Joy
-    </button>
-    <div class="cta-time">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-      Est time: 8 min
+    <!-- RIGHT: Q1 chips — "door" panel -->
+    <div class="s1-right">
+      <h2 class="fj-q">I want money to help me with…</h2>
+      <p class="fj-qs">Choose what feels most relevant today. Up to 3.</p>
+      <div class="chips" id="q1Chips">
+        <div class="chip" onclick="selectQ1(this)">Enjoying the moment</div>
+        <div class="chip" onclick="selectQ1(this)">Comfort</div>
+        <div class="chip" onclick="selectQ1(this)">Security</div>
+        <div class="chip" onclick="selectQ1(this)">Philanthropy and giving</div>
+        <div class="chip" onclick="selectQ1(this)">Supporting my family</div>
+        <div class="chip" onclick="selectQ1(this)">Choice / Freedom</div>
+        <div class="chip" onclick="selectQ1(this)">Simplicity</div>
+        <div class="chip" onclick="selectQ1(this)">Status</div>
+      </div>
+      <p class="chip-hint" id="chipHint">Select at least one to continue</p>
+      <div class="cta-wrap">
+        <button class="cta-btn" id="ctaBtn" disabled onclick="goTo(2)">
+          Discover Financial Joy
+        </button>
+        <div class="cta-time">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Est time: 8 min
+        </div>
+      </div>
     </div>
+
   </div>
 
 </div>
 
 <!-- ══════════════════════════════════════════ -->
-<!-- SCREEN 2 — FJ Q1 (Typeform)             -->
+<!-- SCREEN 2 — FJ Q2 matrix (Typeform)        -->
 <!-- ══════════════════════════════════════════ -->
 <div class="screen adv-screen" id="screen2" style="padding:0;">
   <div class="adv-nav">
@@ -549,37 +576,6 @@
   </div>
   <div class="adv-body">
     <div class="adv-qnum fade-up" data-delay="0">1 →</div>
-    <h2 class="adv-headline fade-up" data-delay="60">I want money to help me with…</h2>
-    <div class="chips fade-up" data-delay="120" id="q1ChipsAdv" style="max-width:660px;">
-      <div class="chip adv-chip" onclick="selectQ1adv(this)">Enjoying the moment</div>
-      <div class="chip adv-chip" onclick="selectQ1adv(this)">Comfort</div>
-      <div class="chip adv-chip" onclick="selectQ1adv(this)">Security</div>
-      <div class="chip adv-chip" onclick="selectQ1adv(this)">Philanthropy and giving</div>
-      <div class="chip adv-chip" onclick="selectQ1adv(this)">Supporting my family</div>
-      <div class="chip adv-chip" onclick="selectQ1adv(this)">Choice / Freedom</div>
-      <div class="chip adv-chip" onclick="selectQ1adv(this)">Simplicity</div>
-      <div class="chip adv-chip" onclick="selectQ1adv(this)">Status</div>
-    </div>
-    <p class="chip-hint fade-up" data-delay="160" id="q1AdvHint" style="text-align:left;">Choose up to 3</p>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════ -->
-<!-- SCREEN 3 — FJ Q2 matrix (Typeform)        -->
-<!-- ══════════════════════════════════════════ -->
-<div class="screen adv-screen" id="screen3" style="padding:0;">
-  <div class="adv-nav">
-    <div class="adv-nav-logo">
-      <svg width="18" height="18" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="13" stroke="white" stroke-width="2.2"/><circle cx="16" cy="16" r="7" stroke="white" stroke-width="2.2"/><circle cx="16" cy="16" r="2" fill="white"/></svg>
-      <span class="adv-nav-logo-text">knomee</span>
-    </div>
-    <span class="adv-nav-title">Financial Joy</span>
-    <button class="adv-nav-x" onclick="goTo(1)">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-    </button>
-  </div>
-  <div class="adv-body">
-    <div class="adv-qnum fade-up" data-delay="0">2 →</div>
     <h2 class="adv-headline fade-up" data-delay="60">Right now, how would you like to direct attention to these areas…</h2>
     <div class="matrix-wrap fade-up" data-delay="130">
       <div class="matrix-header">
@@ -601,9 +597,9 @@
 </div>
 
 <!-- ══════════════════════════════ -->
-<!-- SCREEN 4 — Loading            -->
+<!-- SCREEN 3 — Loading            -->
 <!-- ══════════════════════════════ -->
-<div class="screen" id="screen4" style="background:var(--plum);justify-content:center;">
+<div class="screen" id="screen3" style="background:var(--plum);justify-content:center;">
   <div class="load-inner">
     <div class="load-logo">
       <svg width="26" height="26" viewBox="0 0 32 32" fill="none">
@@ -622,9 +618,9 @@
 </div>
 
 <!-- ══════════════════════════════ -->
-<!-- SCREEN 5 — Reveal             -->
+<!-- SCREEN 4 — Reveal             -->
 <!-- ══════════════════════════════ -->
-<div class="screen" id="screen5">
+<div class="screen" id="screen4">
 
   <h2 class="reveal-headline fade-up" data-delay="0">Here's what we found.</h2>
   <p class="reveal-sub fade-up" data-delay="110">Based on your answers, here's a glimpse of your Financial ID.</p>
@@ -675,14 +671,15 @@
   <div class="reveal-cta fade-up" data-delay="260">
     <button class="save-btn" onclick="goTo(5)">Save my Financial ID →</button>
     <span class="reveal-skip" onclick="goTo(6)">Continue without saving</span>
+
   </div>
 
 </div>
 
 <!-- ══════════════════════════════ -->
-<!-- SCREEN 6 — Login / Save       -->
+<!-- SCREEN 5 — Login / Save       -->
 <!-- ══════════════════════════════ -->
-<div class="screen" id="screen6" style="justify-content:center;">
+<div class="screen" id="screen5" style="justify-content:center;">
   <div class="login-card fade-up" data-delay="0">
     <div class="login-logo">
       <svg width="22" height="22" viewBox="0 0 32 32" fill="none">
@@ -709,9 +706,9 @@
 </div>
 
 <!-- ══════════════════════════════════════ -->
-<!-- SCREEN 7 — Confidence adventure intro -->
+<!-- SCREEN 6 — Confidence adventure intro -->
 <!-- ══════════════════════════════════════ -->
-<div class="screen" id="screen7" style="padding:0; min-height:calc(100vh - 50px);">
+<div class="screen" id="screen6" style="padding:0;">
 
   <!-- Override navbar for this screen -->
   <div class="conf-nav">
@@ -778,7 +775,7 @@
 
 <!-- Proto nav -->
 <div class="proto-wrap">
-  <div class="proto-label" id="protoLabel">SCREEN 1 / 7</div>
+  <div class="proto-label" id="protoLabel">SCREEN 1 / 6</div>
   <div class="proto-nav">
     <button class="proto-btn" onclick="goTo(1)">1</button>
     <button class="proto-btn" onclick="goTo(2)">2</button>
@@ -786,7 +783,6 @@
     <button class="proto-btn" onclick="goTo(4)">4</button>
     <button class="proto-btn" onclick="goTo(5)">5</button>
     <button class="proto-btn" onclick="goTo(6)">6</button>
-    <button class="proto-btn" onclick="goTo(7)">7</button>
   </div>
 </div>
 
@@ -801,21 +797,22 @@
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     const screen = document.getElementById('screen' + n);
     screen.classList.add('active');
-    document.getElementById('protoLabel').textContent = 'SCREEN ' + n + ' / 7';
+    document.getElementById('protoLabel').textContent = 'SCREEN ' + n + ' / 6';
     window.scrollTo(0, 0);
 
-    // Hide/show main navbar (adventure + confidence screens have their own)
-    document.querySelector('.navbar').style.display = (n >= 2 && n <= 3) || n === 7 ? 'none' : 'flex';
+    // Hide/show main navbar (screen 2 adventure + screen 6 confidence have their own)
+    document.querySelector('.navbar').style.display = n === 2 || n === 6 ? 'none' : 'flex';
 
-    // Show/hide adventure arrows (screens 2–3 only)
+    // Show/hide adventure arrows (screen 2 only — single question)
     var arrows = document.getElementById('advArrows');
-    arrows.classList.toggle('visible', n === 2 || n === 3);
-    if (arrows.classList.contains('visible')) {
-      document.getElementById('arrowUp').disabled = n === 2;
+    arrows.classList.toggle('visible', n === 2);
+    if (n === 2) {
+      document.getElementById('arrowUp').disabled = false;
+      document.getElementById('arrowDown').disabled = false;
     }
 
-    if (n === 4) { runLoading(); return; }
-    if (n === 5) { buildReveal(); }
+    if (n === 3) { runLoading(); return; }
+    if (n === 4) { buildReveal(); }
 
     const els = screen.querySelectorAll('.fade-up');
     els.forEach(el => { el.classList.remove('in'); el.style.transitionDelay = '0ms'; });
@@ -866,6 +863,12 @@
     for (var i = 0; i < 7; i++) { setMatrix(i, 'same'); }
   }
 
+  /* ── advNav: up/down arrows ── */
+  function advNav(dir) {
+    if (dir === -1) goTo(1);   // up → back to welcome
+    if (dir === 1)  goTo(3);   // down → loading → reveal
+  }
+
   /* ── Loading → Reveal ── */
   function startReveal() { goTo(3); }
 
@@ -889,7 +892,6 @@
         setTimeout(() => {
           const s = document.getElementById('screen3');
           s.classList.remove('active');
-          // animate fade to white
           s.style.transition = 'opacity 0.4s';
           s.style.opacity = '0';
           setTimeout(() => { s.style.opacity = ''; s.style.transition = ''; goTo(4); }, 400);
