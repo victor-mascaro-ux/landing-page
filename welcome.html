@@ -785,7 +785,6 @@
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     const screen = document.getElementById('screen' + n);
     screen.classList.add('active');
-    document.getElementById('protoLabel').textContent = 'SCREEN ' + n + ' / 6';
     window.scrollTo(0, 0);
 
     // Hide/show main navbar (screen 2 adventure + screen 6 confidence have their own)
