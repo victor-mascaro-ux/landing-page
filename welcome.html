@@ -341,7 +341,21 @@
       padding: 12px 14px; font-size: 14px; color: var(--body); line-height: 1.5;
     }
 
-    .reveal-cta { margin-top: 48px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+    /* Stats strip */
+    .reveal-stats {
+      width: 100%; max-width: 980px;
+      margin-top: 20px;
+      background: var(--teal-light);
+      border-radius: 12px;
+      border-left: 4px solid var(--teal);
+      padding: 16px 24px;
+      display: flex; align-items: center; gap: 20px;
+    }
+    .reveal-stats-icon { font-size: 22px; flex-shrink: 0; }
+    .reveal-stats-text { font-size: 14px; color: var(--body); line-height: 1.5; }
+    .reveal-stats-text strong { color: var(--plum); }
+
+    .reveal-cta { margin-top: 24px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
     .save-btn {
       background: var(--teal); color: white; border: none;
       border-radius: 999px; padding: 20px 48px;
@@ -668,10 +682,14 @@
 
   </div>
 
-  <div class="reveal-cta fade-up" data-delay="260">
+  <div class="reveal-stats fade-up" data-delay="300" id="revealStats">
+    <div class="reveal-stats-icon">📊</div>
+    <div class="reveal-stats-text" id="revealStatText"></div>
+  </div>
+
+  <div class="reveal-cta fade-up" data-delay="360">
     <button class="save-btn" onclick="goTo(5)">Save my Financial ID →</button>
     <span class="reveal-skip" onclick="goTo(6)">Continue without saving</span>
-
   </div>
 
 </div>
@@ -940,6 +958,18 @@
     document.getElementById('fidQuestions').innerHTML = qs.map(q =>
       `<div class="fid-question">${q}</div>`
     ).join('');
+
+    const statsMap = {
+      'Security':               '<strong>71%</strong> of people who prioritize security say they feel more confident in financial conversations after clarifying what "enough" means to them.',
+      'Supporting my family':   '<strong>68%</strong> of respondents who prioritize family say their biggest financial worry is not having a clear plan to protect the people they love.',
+      'Enjoying the moment':    '<strong>63%</strong> of people focused on living fully in the present report that they delay experiences more than they want to — often unnecessarily.',
+      'Comfort':                '<strong>74%</strong> of people who value comfort say that reducing financial complexity — not earning more — would have the biggest impact on their peace of mind.',
+      'Choice / Freedom':       '<strong>69%</strong> of people who prioritize freedom say they feel constrained by at least one financial decision they made more than 5 years ago.',
+      'Philanthropy and giving':'<strong>61%</strong> of people driven by giving say they want to do more — but don\'t have a clear framework for how giving fits into their financial plan.',
+      'Simplicity':             '<strong>77%</strong> of people who value simplicity say they have financial accounts or products they don\'t fully understand — and it bothers them.',
+      'Status':                 '<strong>65%</strong> of achievement-oriented people say their definition of financial success has changed significantly in the last 3 years.',
+    };
+    document.getElementById('revealStatText').innerHTML = statsMap[top] || '<strong>72%</strong> of people say a single clarifying conversation with an advisor changed how they think about their financial priorities.';
   }
 
   /* ── Init ── */
